@@ -3,8 +3,7 @@
 basedir=~
 confdir=config_files
 progname=`basename "$0"`
-files=`ls -aI $progname -I . -I .. -I .git`
-for f in $files
+for f in `ls -a $confdir`
 do
   if [[ -a "$basedir/$f" ]]
   then
@@ -25,6 +24,6 @@ do
       fi
     fi
   else
-    ln -s "$f" "$basedir/$f"
+    ln -s "$confdir/$f" "$basedir/$f"
   fi
 done
