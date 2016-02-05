@@ -1,0 +1,12 @@
+[user]
+	name = Adam Hamot
+	email = AdamHamot@gmail.com
+[color]
+	ui = true
+[alias]
+	s = status
+  d = diff
+  ds = diff --cached
+  co = checkout
+[push]
+	default = simple
