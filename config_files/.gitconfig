@@ -1,12 +1,34 @@
 [user]
-	name = Adam Hamot
-	email = AdamHamot@gmail.com
+  name = Adam Hamot
+  email = ahamot@rbi.com
 [color]
-	ui = true
+  ui = true
+[diff]
+  renames = copies
+  algorithm = patience
+  compactionHeuristic = true
+[merge]
+  conflictStyle = diff3
 [alias]
-	s = status
+  s = status
   d = diff
   ds = diff --cached
   co = checkout
+  lol = log -p --reverse master..HEAD
+  b = branch --sort=-committerdate -vva
+  fl = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+  puom = push origin master
+  plom = pull origin master
 [push]
-	default = simple
+  default = simple
+[fetch]
+  prune = true
+[core]
+  editor = vim
+  excludesfile = ~/.gitignore.global
+[url "git@github.com:"]
+  insteadOf = https://github.com/
+[commit]
+  gpgsign = true
+[pull]
+	rebase = true

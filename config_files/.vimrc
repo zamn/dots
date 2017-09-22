@@ -11,22 +11,122 @@ set number
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
-" Plugins? Look into Vundle:
-" https://github.com/gmarik/Vundle.vim
-" It makes plugin management *super* easy.
-" Recommended Plugins:
-" https://github.com/Townk/vim-autoclose
 " https://github.com/majutsushi/tagbar
-" https://github.com/bling/vim-airline
+
+Plugin 'https://github.com/bling/vim-airline'
 
 Plugin 'https://github.com/gmarik/Vundle.vim'
 Plugin 'https://github.com/Townk/vim-autoclose'
 Plugin 'https://github.com/majutsushi/tagbar'
 Plugin 'https://github.com/fatih/vim-go'
 Plugin 'https://github.com/kien/ctrlp.vim'
-" Plugin 'https://github.com/Valloric/YouCompleteMe'
+
+" Javscript tag lookup in vim
+Plugin 'https://github.com/ternjs/tern_for_vim'
+Plugin 'https://github.com/Valloric/YouCompleteMe'
+
+
+Plugin 'tpope/vim-surround'
+Plugin 'tpope/vim-repeat'
+Plugin 'tpope/vim-eunuch'
+Plugin 'tpope/vim-endwise'
+
+" ruby end/do matching
+runtime macros/matchit.vim
+Plugin 'vim-ruby/vim-ruby'
+
+" Fix javascript indentation
+Plugin 'pangloss/vim-javascript'
+Plugin 'othree/yajs.vim'
+
+" Tag file management
+Plugin 'xolox/vim-misc'
+Plugin 'xolox/vim-easytags'
+
+" Eslint Integration
+Plugin 'scrooloose/syntastic'
+
+" Beautiful parens
+Plugin 'kien/rainbow_parentheses.vim'
+
+" Autoread
+Bundle 'djoshea/vim-autoread'
+
+" GIIIIIT
+Plugin 'tpope/vim-fugitive'
+Plugin 'gregsexton/gitv'
 
 call vundle#end()
+
+" TAGS
+set tags=tags;
+
+
+"CTRLP ignore directories
+" let g:ctrlp_custom_ignore = 'node_modules\|DS_Store\|git\|coverage'
+
+" Zoom / Restore window.
+function! s:ZoomToggle() abort
+  if exists('t:zoomed') && t:zoomed
+    execute t:zoom_winrestcmd
+    let t:zoomed = 0
+  else
+    let t:zoom_winrestcmd = winrestcmd()
+    resize
+    vertical resize
+    let t:zoomed = 1
+  endif
+endfunction
+command! ZoomToggle call s:ZoomToggle()
+
+" CTRLP - ignore anything in .gitignore
+let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
+
+" Include members in tags
+let g:easytags_include_members = 1
+
+" Javascript configuration for Easytags
+"find . -type f -iregex .*\.js$ -not -path "./node_modules/*" -exec jsctags {} -f \; | sed '/^$/d' | sort > tags "
+"let g:easytags_languages = {
+"\   'javascript': {
+"\       'cmd': '/usr/local/bin/jsctags',
+"\       'args': [],
+"\       'fileoutput_opt': '-f',
+"\       'stdout_opt': '-f-',
+"\       'recurse_flag': '-R'
+"\   }
+"\}
+
+" RainbowParens
+map <F2> :RainbowParenthesesToggleAll<CR>
+
+let g:rbpt_colorpairs = [
+    \ ['brown',       'RoyalBlue3'],
+    \ ['Darkblue',    'SeaGreen3'],
+    \ ['darkgray',    'DarkOrchid3'],
+    \ ['darkgreen',   'firebrick3'],
+    \ ['darkcyan',    'RoyalBlue3'],
+    \ ['darkred',     'SeaGreen3'],
+    \ ['darkmagenta', 'DarkOrchid3'],
+    \ ['brown',       'firebrick3'],
+    \ ['gray',        'RoyalBlue3'],
+    \ ['black',       'SeaGreen3'],
+    \ ['darkmagenta', 'DarkOrchid3'],
+    \ ['Darkblue',    'firebrick3'],
+    \ ['darkgreen',   'RoyalBlue3'],
+    \ ['darkcyan',    'SeaGreen3'],
+    \ ['darkred',     'DarkOrchid3'],
+    \ ['red',         'firebrick3'],
+  \ ]
+
+" Syntastical!
+let g:syntastic_mode_map = { 'mode': 'passive', 'active_filetypes': [], 'passive_filetypes': [] }
+"let g:syntastic_mode_map = {
+"      \'mode': 'passive',
+      "\ 'passive_filetypes': [] }
+
+" airline Font Fix
+let g:airline_powerline_fonts = 1
 
 " Autoclose fix for YCM
 let g:AutoClosePumvisible = {"ENTER": "<C-Y>", "ESC": "<ESC>"}
@@ -48,8 +148,9 @@ set autoread
 
 " With a map leader it's possible to do extra key combinations
 " like <leader>w saves the current file
-let mapleader = ","
-let g:mapleader = ","
+let mapleader = " "
+let g:maplocalleader = " "
+let g:mapleader = " "
 
 " Go stuff
 let g:go_fmt_command = "goimports"
@@ -57,7 +158,7 @@ let g:go_fmt_autosave = 1
 
 " :W sudo saves the file 
 " (useful for handling the permission-denied error)
-command Ws w !sudo tee % > /dev/null
+" command Ws w !sudo tee % > /dev/null
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface
@@ -89,9 +190,6 @@ set whichwrap+=<,>,h,l
 
 " Ignore case when searching
 set ignorecase
-
-" When searching try to be smart about cases 
-set smartcase
 
 " Highlight search results
 set hlsearch
@@ -128,8 +226,10 @@ syntax enable
 " Enable 256 colors in vim (regardless of terminal or gui)
 set t_Co=256
 
-" timeout time for switching between modes
-set timeout timeoutlen=100 ttimeoutlen=50
+" Vim will infinitely wait for succeeding actions
+set notimeout
+set ttimeout
+set ttimeoutlen=50
 
 set background=dark
 
@@ -194,6 +294,21 @@ vnoremap <silent> # :call VisualSelection('b', '')<CR>
 map j gj
 map k gk
 
+" Code exploring
+map <C-t> <C-[>
+map <F3> :TagbarToggle<CR>
+
+" Folds on folds on folds
+setlocal foldmethod=syntax
+" za,zc,zo - zA, zC, zO
+"map <leader>ft za<cr>
+
+" Tern stuff
+" <leader> tt = definition
+" https://drive.google.com/file/d/0B7b8cVtgH4hKMXZxTVhMZ2loUU0/view
+let g:tern_map_prefix = '<leader>'
+let g:tern_map_keys = 1
+
 " Disable highlight when <leader><cr> is pressed
 map <silent> <leader><cr> :noh<cr>
 
@@ -211,14 +326,9 @@ map <leader>ba :1,1000 bd!<cr>
 
 " Useful mappings for managing tabs
 map <leader>tn :tabnew<cr>
-map <leader>to :tabonly<cr>
-map <leader>tc :tabclose<cr>
-map <leader>tm :tabmove 
-map <leader>t<leader> :tabnext 
 
-" Opens a new tab with the current buffer's path
-" Super useful when editing files in the same directory
-map <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
+" TODO: Add ability to do this anywhere
+map <leader>te :vsplit test/%:r_test.js<cr>
 
 " Switch CWD to the directory of the open buffer
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
@@ -248,6 +358,17 @@ set laststatus=2
 
 " Format the status line
 set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ %l
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+" Syntastic
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 0
+let g:syntastic_check_on_wq = 0
+let g:syntastic_javascript_checkers = ['eslint']
+let g:syntastic_javascript_eslint_exec = 'eslint_d'
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -261,7 +382,15 @@ func! DeleteTrailingWS()
   exe "normal `z"
 endfunc
 autocmd BufWrite *.py :call DeleteTrailingWS()
-autocmd BufWrite *.coffee :call DeleteTrailingWS()
+autocmd BufWrite *.js :call DeleteTrailingWS()
+
+" Git commit auto wrap
+" autocmd Filetype gitcommit textwidth=72
+
+"autocmd BufWrite *.js :exe "normal! gg=G``zz<CR>"
+noremap <Leader>f :exe "normal! gg=G``zz"<CR>
+
+autocmd Syntax c,cpp,vim,xml,html,xhtml,perl,javascript,ruby,json normal zR
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -272,6 +401,21 @@ vnoremap <silent> gv :call VisualSelection('gv', '')<CR>
 
 " When you press <leader>r you can search and replace the selected text
 vnoremap <silent> <leader>r :call VisualSelection('replace', '')<CR>
+
+" The Silver Searcher
+if executable('ag')
+  " Use ag over grep
+  set grepprg=ag\ --nogroup\ --nocolor
+
+  "       " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+
+  " ag is fast enough that CtrlP doesn't need to cache
+  let g:ctrlp_use_caching = 0
+endif 
+
+" bind K to grep word under cursor
+nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>"
 
 " Do :help cope if you are unsure what cope is. It's super useful!
 "
@@ -286,8 +430,10 @@ vnoremap <silent> <leader>r :call VisualSelection('replace', '')<CR>
 "
 map <leader>cc :botright cope<cr>
 map <leader>co ggVGy:tabnew<cr>:set syntax=qf<cr>pgg
-map <leader>n :cn<cr>
-map <leader>p :cp<cr>
+
+au Syntax * RainbowParenthesesLoadRound
+au Syntax * RainbowParenthesesLoadSquare
+au Syntax * RainbowParenthesesLoadBraces
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -310,6 +456,12 @@ map <leader>q :e ~/buffer<cr>
 map <leader>pp :setlocal paste!<cr>
 
 
+"map <leader>l :SyntasticToggleMode<cr>
+map <leader>l :SyntasticToggleMode<cr>
+
+" let me navigate errors via leader n/p
+map <leader>n :lnext<cr>
+map <leader>p :lprev<cr>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Helper functions
