@@ -31,4 +31,6 @@
 [commit]
   gpgsign = true
 [pull]
-	rebase = true
+  rebase = true
+[gpg]
+  program = gpg2

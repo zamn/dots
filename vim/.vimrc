@@ -25,7 +25,6 @@ Plugin 'https://github.com/kien/ctrlp.vim'
 Plugin 'https://github.com/ternjs/tern_for_vim'
 Plugin 'https://github.com/Valloric/YouCompleteMe'
 
-
 Plugin 'tpope/vim-surround'
 Plugin 'tpope/vim-repeat'
 Plugin 'tpope/vim-eunuch'
@@ -38,6 +37,7 @@ Plugin 'vim-ruby/vim-ruby'
 " Fix javascript indentation
 Plugin 'pangloss/vim-javascript'
 Plugin 'othree/yajs.vim'
+Plugin 'moll/vim-node'
 
 " Tag file management
 Plugin 'xolox/vim-misc'
@@ -55,6 +55,7 @@ Bundle 'djoshea/vim-autoread'
 " GIIIIIT
 Plugin 'tpope/vim-fugitive'
 Plugin 'gregsexton/gitv'
+Plugin 'tpope/vim-rhubarb'
 
 call vundle#end()
 
@@ -326,6 +327,7 @@ map <leader>ba :1,1000 bd!<cr>
 
 " Useful mappings for managing tabs
 map <leader>tn :tabnew<cr>
+map <leader>tc :tabclose<cr>
 
 " TODO: Add ability to do this anywhere
 map <leader>te :vsplit test/%:r_test.js<cr>
