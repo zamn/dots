@@ -41,7 +41,7 @@ export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quo
 stty -ixon
 
 export TERM=xterm-256color
-eval `keychain -q --eval --nogui -Q --gpg2 --agents ssh,gpg id_rsa A7C23FA91CE5078C386ECE70DA554E3394EBD1A2
+eval `keychain -q --eval --nogui -Q --gpg2 --agents ssh,gpg id_rsa 5563DF0A5D16C2BD4D857F53EA26E9D5EDF3CC76`
 
 PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
 
@@ -67,10 +67,6 @@ alias nodejs=node
 alias copy='xclip -select primary -i'
 export MOSH_ESCAPE_KEY=~
 alias prettyxml='xmllint --format -'
-
-# Add an "alert" alias for long running commands.  Use like so:
-#   sleep 10; alert
-alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
 # Get all bash completions
 for f in /usr/share/bash-completion/completions/*; do
