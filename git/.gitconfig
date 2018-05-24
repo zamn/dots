@@ -1,6 +1,7 @@
 [user]
   name = Adam Hamot
   email = ahamot@rbi.com
+  signingkey = a7c23fa91ce5078c386ece70da554e3394ebd1a2
 [color]
   ui = true
 [diff]
@@ -26,11 +27,11 @@
 [core]
   editor = vim
   excludesfile = ~/.gitignore.global
-[url "git@github.com:"]
-  insteadOf = https://github.com/
 [commit]
   gpgsign = true
 [pull]
   rebase = true
 [gpg]
   program = gpg2
+[url "git://"]
+  insteadOf = https://

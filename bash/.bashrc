@@ -27,6 +27,10 @@ shopt -s checkwinsize
 # match all files and zero or more directories and subdirectories.
 #shopt -s globstar
 
+
+# Allow me to do !(file_I_want_to_skip)
+shopt -s extglob
+
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
@@ -37,6 +41,7 @@ export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quo
 stty -ixon
 
 export TERM=xterm-256color
+eval `keychain -q --eval --nogui -Q --gpg2 --agents ssh,gpg id_rsa A7C23FA91CE5078C386ECE70DA554E3394EBD1A2
 
 PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
 
@@ -74,14 +79,13 @@ done
 
 set -o vi
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/local/go/bin:/usr/local/go/bin
-export GOPATH=/home/zamn/code/go
-export GOROOT='/usr/local/go'
+export GOPATH=$HOME/code/go
+export GOROOT='/usr/lib/go'
 export GOBIN=$GOPATH/bin
+
 export PATH=$PATH:$GOROOT/bin:$GOBIN
-export PATH="$HOME/.rbenv/bin:$PATH"
-eval "$(rbenv init -)"
+export EDITOR=vim
 bind -m vi-insert "\C-l":clear-screen
-export DISPLAY=:0;
 
 # Load extra configs last
 if [ -f ~/.rbidigital.bash ]
