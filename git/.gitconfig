@@ -1,7 +1,7 @@
 [user]
   name = Adam Hamot
-  email = ahamot@rbi.com
-  signingkey = a7c23fa91ce5078c386ece70da554e3394ebd1a2
+  email = adamhamot@havenlife.com
+  signingkey = 0E26C8DDA1488DA8F3BBCB0F1DA873783B64AB1F
 [color]
   ui = true
 [diff]

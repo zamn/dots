@@ -36,6 +36,7 @@ Plugin 'vim-ruby/vim-ruby'
 
 " Fix javascript indentation
 Plugin 'pangloss/vim-javascript'
+Plugin 'leafgarland/typescript-vim'
 Plugin 'othree/yajs.vim'
 Plugin 'moll/vim-node'
 

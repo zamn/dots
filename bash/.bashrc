@@ -34,6 +34,9 @@ shopt -s extglob
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
+# allow less to display some color
+export LESS='-R'
+
 # colored GCC warnings and errors
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
@@ -41,7 +44,7 @@ export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quo
 stty -ixon
 
 export TERM=xterm-256color
-eval `keychain -q --eval --nogui -Q --gpg2 --agents ssh,gpg id_rsa 5563DF0A5D16C2BD4D857F53EA26E9D5EDF3CC76`
+eval `keychain --nogui --eval --agents ssh,gpg --inherit any id_rsa 1DA873783B64AB1F`
 
 PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
 
@@ -64,14 +67,19 @@ alias ag='ag --color-line-number "49;32" --color-match "1;49;91" --color-path "4
 alias stripSlash="sed 's/[\]//g'"
 alias node='env NODE_NO_READLINE=1 rlwrap node'
 alias nodejs=node
-alias copy='xclip -select primary -i'
 export MOSH_ESCAPE_KEY=~
 alias prettyxml='xmllint --format -'
 
+# Use neovim for all teh things.. for now
+alias vim=nvim
+
 # Get all bash completions
-for f in /usr/share/bash-completion/completions/*; do
-  . $f
-done
+if [[ -f /usr/share/bash-completion/completions/* ]]
+then
+  for f in /usr/share/bash-completion/completions/*; do
+    source $f
+  done
+fi
 
 set -o vi
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/local/go/bin:/usr/local/go/bin
@@ -80,11 +88,14 @@ export GOROOT='/usr/lib/go'
 export GOBIN=$GOPATH/bin
 
 export PATH=$PATH:$GOROOT/bin:$GOBIN
+export PATH=$PATH:/mnt/c/Windows/System32
+export PATH=$PATH:./node_modules/.bin
+export PATH=$PATH:$HOME/.local/bin
 export EDITOR=vim
 bind -m vi-insert "\C-l":clear-screen
 
-# Load extra configs last
-if [ -f ~/.rbidigital.bash ]
-then
-  . ~/.rbidigital.bash
-fi
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
