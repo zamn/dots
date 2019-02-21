@@ -1,7 +1,7 @@
 [user]
   name = Adam Hamot
   email = adamhamot@havenlife.com
-  signingkey = 0E26C8DDA1488DA8F3BBCB0F1DA873783B64AB1F
+  signingkey = CBDA092DB98A285B4EE833BD0735DEAE3955FCCB
 [color]
   ui = true
 [diff]
@@ -32,6 +32,6 @@
 [pull]
   rebase = true
 [gpg]
-  program = gpg2
+  program = gpg
 [url "git://"]
   insteadOf = https://

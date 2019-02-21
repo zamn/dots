@@ -8,57 +8,56 @@ filetype off
 
 set number
 
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
+call plug#begin('~/.vim/plugged')
 
 " https://github.com/majutsushi/tagbar
 
-Plugin 'https://github.com/bling/vim-airline'
+Plug 'https://github.com/bling/vim-airline'
 
-Plugin 'https://github.com/gmarik/Vundle.vim'
-Plugin 'https://github.com/Townk/vim-autoclose'
-Plugin 'https://github.com/majutsushi/tagbar'
-Plugin 'https://github.com/fatih/vim-go'
-Plugin 'https://github.com/kien/ctrlp.vim'
+Plug 'https://github.com/gmarik/Vundle.vim'
+Plug 'https://github.com/Townk/vim-autoclose'
+Plug 'https://github.com/majutsushi/tagbar'
+Plug 'https://github.com/fatih/vim-go'
+Plug 'https://github.com/kien/ctrlp.vim'
 
 " Javscript tag lookup in vim
-Plugin 'https://github.com/ternjs/tern_for_vim'
-Plugin 'https://github.com/Valloric/YouCompleteMe'
+Plug 'https://github.com/ternjs/tern_for_vim'
+Plug 'https://github.com/Valloric/YouCompleteMe'
 
-Plugin 'tpope/vim-surround'
-Plugin 'tpope/vim-repeat'
-Plugin 'tpope/vim-eunuch'
-Plugin 'tpope/vim-endwise'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-eunuch'
+Plug 'tpope/vim-endwise'
 
 " ruby end/do matching
 runtime macros/matchit.vim
-Plugin 'vim-ruby/vim-ruby'
+Plug 'vim-ruby/vim-ruby'
 
 " Fix javascript indentation
-Plugin 'pangloss/vim-javascript'
-Plugin 'leafgarland/typescript-vim'
-Plugin 'othree/yajs.vim'
-Plugin 'moll/vim-node'
+Plug 'leafgarland/typescript-vim'
+Plug 'pangloss/vim-javascript'
+Plug 'othree/yajs.vim'
+Plug 'moll/vim-node'
 
 " Tag file management
-Plugin 'xolox/vim-misc'
-Plugin 'xolox/vim-easytags'
+Plug 'xolox/vim-misc'
+Plug 'xolox/vim-easytags'
 
 " Eslint Integration
-Plugin 'scrooloose/syntastic'
+Plug 'scrooloose/syntastic'
 
 " Beautiful parens
-Plugin 'kien/rainbow_parentheses.vim'
+Plug 'kien/rainbow_parentheses.vim'
 
 " Autoread
-Bundle 'djoshea/vim-autoread'
+Plug 'djoshea/vim-autoread'
 
 " GIIIIIT
-Plugin 'tpope/vim-fugitive'
-Plugin 'gregsexton/gitv'
-Plugin 'tpope/vim-rhubarb'
+Plug 'tpope/vim-fugitive'
+Plug 'gregsexton/gitv'
+Plug 'tpope/vim-rhubarb'
 
-call vundle#end()
+call plug#end()
 
 " TAGS
 set tags=tags;
