@@ -44,7 +44,11 @@ export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quo
 stty -ixon
 
 export TERM=xterm-256color
-eval `keychain --nogui --eval --agents ssh,gpg --inherit any id_rsa 1DA873783B64AB1F`
+has_keychain=`which keychain; echo $?`
+if [[ "$has_keychain" -eq 0 ]]
+then
+  eval `keychain --nogui --eval --agents ssh,gpg --inherit any id_rsa 1DA873783B64AB1F`
+fi
 
 PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
 
@@ -95,7 +99,8 @@ export EDITOR=vim
 bind -m vi-insert "\C-l":clear-screen
 
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
+export FZF_DEFAULT_COMMAND='ag --nocolor --ignore node_modules -g ""'
+
+[ -f ~/.mac.bash ] && source ~/.mac.bash
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash

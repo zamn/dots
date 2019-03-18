@@ -5,23 +5,34 @@
 filetype off
 set number
 
+" Install vim-plug if missing
+if empty(glob('~/.local/share/nvim/site/autoload/plug.vim'))
+  silent !curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall
+endif
+
 call plug#begin('~/.local/share/nvim/plugged')
 
 Plug 'junegunn/vim-easy-align'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
 Plug 'w0rp/ale'
 Plug 'bling/vim-airline'
 
 Plug 'fatih/vim-go'
 
+Plug 'majutsushi/tagbar'
+
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'mhartington/nvim-typescript', {'do': './install.sh'}
+"Plug 'mhartington/nvim-typescript', {'do': './install.sh'}
 
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 
 Plug 'jiangmiao/auto-pairs'
 
+Plug 'Shougo/vimproc.vim', { 'do': 'make' }
 Plug 'Quramy/tsuquyomi'
 
 " Plug 'ternjs/tern_for_vim'
@@ -32,9 +43,15 @@ Plug 'moll/vim-node'
 
 Plug 'HerringtonDarkholme/yats.vim'
 
+Plug 'scrooloose/nerdtree'
+
+" UndotreeToggle
+Plug 'mbbill/undotree'
+
 " Tag file management
 Plug 'xolox/vim-misc'
-Plug 'xolox/vim-easytags'
+
+"Plug 'ludovicchabant/vim-gutentags'
 
 " GIIIIIT
 Plug 'tpope/vim-fugitive'
@@ -43,12 +60,35 @@ Plug 'gregsexton/gitv', {'on': ['Gitv']}
 
 call plug#end()
 
+"let g:tsuquyomi_disable_quickfix = 1
+
+source $HOME/.config/nvim/gitlab.vim
+
 " Error and warning signs.
 let g:ale_sign_error = '⤫'
 let g:ale_sign_warning = '⚠'
 
+" CTRL-W < Decrease current window width by N (default 1).
+" CTRL-W > Increase current window width by N (default 1).
+let g:NERDTreeWinSize=35
+map <F2> :NERDTreeToggle<CR>
+
+let g:ale_linters = {
+\   'javascript': ['eslint'],
+\   'typescript': ['tslint'],
+\}
+
 " Enable integration with airline.
 let g:airline#extensions#ale#enabled = 1
+
+let g:airline#extensions#tabline#formatter = 'unique_tail'
+
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#show_tab_nr = 1
+let g:airline#extensions#tabline#tab_nr_type= 2
+let g:airline#extensions#tabline#show_tab_type = 1
+
+let g:ale_lint_on_text_changed = 'never'
 
 let g:AutoPairsMapCR=0
 let g:deoplete#auto_complete_start_length = 1
@@ -58,8 +98,7 @@ imap <expr><TAB> pumvisible() ? "\<C-n>" : (neosnippet#expandable_or_jumpable() 
 imap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
 imap <expr><CR> pumvisible() ? deoplete#mappings#close_popup() : "\<CR>\<Plug>AutoPairsReturn"
 
-"CTRLP ignore directories
-" let g:ctrlp_custom_ignore = 'node_modules\|DS_Store\|git\|coverage'
+nnoremap <c-p> :Files<cr>
 
 " Zoom / Restore window.
 function! s:ZoomToggle() abort
@@ -74,24 +113,6 @@ function! s:ZoomToggle() abort
   endif
 endfunction
 command! ZoomToggle call s:ZoomToggle()
-
-" CTRLP - ignore anything in .gitignore
-let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
-
-" Include members in tags
-let g:easytags_include_members = 1
-
-" Javascript configuration for Easytags
-"find . -type f -iregex .*\.js$ -not -path "./node_modules/*" -exec jsctags {} -f \; | sed '/^$/d' | sort > tags "
-"let g:easytags_languages = {
-"\   'javascript': {
-"\       'cmd': '/usr/local/bin/jsctags',
-"\       'args': [],
-"\       'fileoutput_opt': '-f',
-"\       'stdout_opt': '-f-',
-"\       'recurse_flag': '-R'
-"\   }
-"\}
 
 let g:rbpt_colorpairs = [
     \ ['brown',       'RoyalBlue3'],
@@ -115,12 +136,7 @@ let g:rbpt_colorpairs = [
 " airline Font Fix
 let g:airline_powerline_fonts = 1
 
-" Autoclose fix for YCM
-let g:AutoClosePumvisible = {"ENTER": "<C-Y>", "ESC": "<ESC>"}
-
-" disable annoying
-let g:ycm_add_preview_to_completeopt = 0
-set completeopt-=preview 
+set completeopt-=preview
 
 " Enable filetype plugins
 filetype plugin on
@@ -136,7 +152,7 @@ let g:mapleader = " "
 " let g:go_fmt_command = "goimports"
 " let g:go_fmt_autosave = 1
 
-" :W sudo saves the file 
+" :W sudo saves the file
 " (useful for handling the permission-denied error)
 " command Ws w !sudo tee % > /dev/null
 
@@ -156,7 +172,10 @@ endif
 set cmdheight=2
 
 " A buffer becomes hidden when it is abandoned
-set hid
+set hidden
+
+" Let us jump files using gi
+set path+=**
 
 set whichwrap+=<,>,h,l
 
@@ -164,15 +183,19 @@ set whichwrap+=<,>,h,l
 set ignorecase
 
 " Don't redraw while executing macros (good performance config)
-set lazyredraw 
+set lazyredraw
 
 " For regular expressions turn magic on
 set magic
 
 " Show matching brackets when text indicator is over them
-set showmatch 
+set showmatch
 " How many tenths of a second to blink when matching brackets
 set mat=2
+
+" auto load new file changes
+set autoread
+au FocusGained * :checktime
 
 " No annoying sound on errors
 set noerrorbells
@@ -187,7 +210,7 @@ set foldcolumn=1
 " => Colors and Fonts
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Enable syntax highlighting
-syntax enable 
+syntax enable
 
 " Enable 256 colors in vim (regardless of terminal or gui)
 set t_Co=256
@@ -210,7 +233,6 @@ set encoding=utf8
 " Use Unix as the standard file type
 set ffs=unix,dos,mac
 
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Files, backups and undo
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -226,8 +248,8 @@ set noswapfile
 set expandtab
 
 " 1 tab == 2 spaces
-set shiftwidth=2
-set tabstop=2
+set shiftwidth=4
+set tabstop=4
 
 " Linebreak on 500 characters
 set lbr
@@ -236,7 +258,6 @@ set tw=500
 set ai "Auto indent
 set si "Smart indent
 set wrap "Wrap lines
-
 
 """"""""""""""""""""""""""""""
 " => Visual mode related
@@ -259,7 +280,9 @@ map <C-t> <C-[>
 map <F3> :TagbarToggle<CR>
 
 " Folds on folds on folds
-setlocal foldmethod=syntax
+set foldmethod=syntax
+set nofoldenable
+set foldlevel=50
 " za,zc,zo - zA, zC, zO
 "map <leader>ft za<cr>
 
@@ -285,16 +308,11 @@ map <leader>bd :Bclose<cr>
 map <leader>ba :1,1000 bd!<cr>
 
 " Useful mappings for managing tabs
-map <leader>tn :tabnew<cr>
+map <leader>tn :tabnext<cr>
+map <leader>tp :tabprev<cr>
 map <leader>tc :tabclose<cr>
 
-" TODO: Add ability to do this anywhere
-map <leader>te :vsplit test/%:r_test.js<cr>
-
-" Switch CWD to the directory of the open buffer
-map <leader>cd :cd %:p:h<cr>:pwd<cr>
-
-" Specify the behavior when switching between buffers 
+" Specify the behavior when switching between buffers
 try
   set switchbuf=useopen,usetab,newtab
   set stal=2
@@ -309,7 +327,6 @@ autocmd BufReadPost *
 
 " Remember info about open buffers on close
 set viminfo^=%
-
 
 """"""""""""""""""""""""""""""
 " => Status line
@@ -330,17 +347,14 @@ func! DeleteTrailingWS()
   %s/\s\+$//ge
   exe "normal `z"
 endfunc
-autocmd BufWrite *.py :call DeleteTrailingWS()
-autocmd BufWrite *.js :call DeleteTrailingWS()
+autocmd BufWrite * :call DeleteTrailingWS()
 
 " Git commit auto wrap
 " autocmd Filetype gitcommit textwidth=72
 
-"autocmd BufWrite *.js :exe "normal! gg=G``zz<CR>"
 noremap <Leader>f :exe "normal! gg=G``zz"<CR>
 
 autocmd Syntax c,cpp,vim,xml,html,xhtml,perl,javascript,ruby,json normal zR
-
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => vimgrep searching and cope displaying
@@ -355,16 +369,7 @@ vnoremap <silent> <leader>r :call VisualSelection('replace', '')<CR>
 if executable('ag')
   " Use ag over grep
   set grepprg=ag\ --nogroup\ --nocolor
-
-  "       " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
-  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-
-  " ag is fast enough that CtrlP doesn't need to cache
-  let g:ctrlp_use_caching = 0
-endif 
-
-" bind K to grep word under cursor
-nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>"
+endif
 
 " Do :help cope if you are unsure what cope is. It's super useful!
 "
@@ -412,7 +417,7 @@ function! CmdLine(str)
     exe "menu Foo.Bar :" . a:str
     emenu Foo.Bar
     unmenu Foo
-endfunction 
+endfunction
 
 function! VisualSelection(direction, extra_filter) range
     let l:saved_reg = @"
