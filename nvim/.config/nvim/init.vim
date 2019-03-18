@@ -62,7 +62,10 @@ call plug#end()
 
 "let g:tsuquyomi_disable_quickfix = 1
 
-source $HOME/.config/nvim/gitlab.vim
+
+if !empty(glob('$HOME/.config/nvim/gitlab.vim'))
+  source $HOME/.config/nvim/gitlab.vim
+endif
 
 " Error and warning signs.
 let g:ale_sign_error = '⤫'
