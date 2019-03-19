@@ -104,3 +104,5 @@ export FZF_DEFAULT_COMMAND='ag --nocolor --ignore node_modules -g ""'
 
 [ -f ~/.mac.bash ] && source ~/.mac.bash
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
