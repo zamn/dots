@@ -18,24 +18,19 @@ Plug 'junegunn/vim-easy-align'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'w0rp/ale'
+
+"liuchengxu/eleline.vim
 Plug 'bling/vim-airline'
 
 Plug 'fatih/vim-go'
 
-Plug 'majutsushi/tagbar'
-
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-"Plug 'mhartington/nvim-typescript', {'do': './install.sh'}
+Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install() }}
 
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 
 Plug 'jiangmiao/auto-pairs'
 
-Plug 'Shougo/vimproc.vim', { 'do': 'make' }
-Plug 'Quramy/tsuquyomi'
-
-" Plug 'ternjs/tern_for_vim'
 Plug 'pangloss/vim-javascript'
 Plug 'othree/yajs.vim'
 
@@ -44,6 +39,8 @@ Plug 'moll/vim-node'
 Plug 'HerringtonDarkholme/yats.vim'
 
 Plug 'scrooloose/nerdtree'
+
+Plug 'liuchengxu/vista.vim'
 
 " UndotreeToggle
 Plug 'mbbill/undotree'
@@ -60,12 +57,15 @@ Plug 'gregsexton/gitv', {'on': ['Gitv']}
 
 call plug#end()
 
-"let g:tsuquyomi_disable_quickfix = 1
-
-
 if !empty(glob('$HOME/.config/nvim/gitlab.vim'))
   source $HOME/.config/nvim/gitlab.vim
 endif
+
+function! NearestMethodOrFunction() abort
+  return get(b:, 'vista_nearest_method_or_function', '')
+endfunction
+
+set statusline+=%{NearestMethodOrFunction()}
 
 " Error and warning signs.
 let g:ale_sign_error = '⤫'
@@ -94,12 +94,17 @@ let g:airline#extensions#tabline#show_tab_type = 1
 let g:ale_lint_on_text_changed = 'never'
 
 let g:AutoPairsMapCR=0
-let g:deoplete#auto_complete_start_length = 1
-let g:deoplete#enable_at_startup = 1
-let g:deoplete#enable_smart_case = 1
-imap <expr><TAB> pumvisible() ? "\<C-n>" : (neosnippet#expandable_or_jumpable() ? "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>")
-imap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
-imap <expr><CR> pumvisible() ? deoplete#mappings#close_popup() : "\<CR>\<Plug>AutoPairsReturn"
+
+" use <tab> for trigger completion and navigate to next complete item
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~ '\s'
+endfunction
+
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
 
 nnoremap <c-p> :Files<cr>
 
@@ -173,6 +178,9 @@ endif
 
 " Height of the command bar
 set cmdheight=2
+
+" Use mouse to scroll
+set mouse=a
 
 " A buffer becomes hidden when it is abandoned
 set hidden
@@ -279,8 +287,8 @@ map j gj
 map k gk
 
 " Code exploring
-map <C-t> <C-[>
-map <F3> :TagbarToggle<CR>
+" map <C-t> <C-[>
+map <F3> :Vista!!<CR>
 
 " Folds on folds on folds
 set foldmethod=syntax
@@ -289,11 +297,16 @@ set foldlevel=50
 " za,zc,zo - zA, zC, zO
 "map <leader>ft za<cr>
 
-" Tern stuff
-" <leader> tt = definition
-" https://drive.google.com/file/d/0B7b8cVtgH4hKMXZxTVhMZ2loUU0/view
-let g:tern_map_prefix = '<leader>'
-let g:tern_map_keys = 1
+"  nmap <silent> gd <Plug>(coc-definition)
+"  nmap <silent> gy <Plug>(coc-type-definition)
+"  nmap <silent> gi <Plug>(coc-implementation)
+"  nmap <silent> gr <Plug>(coc-references)
+
+"nmap <leader>td :call CocActionAsync('jumpDefinition')<cr>
+nmap <leader>td <Plug>(coc-definition)
+nmap <leader>ttd <Plug>(coc-type-definition)
+nmap <leader>ti <Plug>(coc-implementation)
+nmap <leader>tr <Plug>(coc-references)
 
 " Disable highlight when <leader><cr> is pressed
 map <silent> <leader><cr> :noh<cr>
@@ -339,6 +352,9 @@ set viminfo^=%
 set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ %l
 set statusline+=%#warningmsg#
 set statusline+=%*
+
+" Show number of matches for a search in status line
+" set statusline+=\ %{g:matchnum}\ matches
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Editing mappings
