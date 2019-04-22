@@ -1,5 +1,5 @@
 .tern-project
-/scripts/
 giftCards/
 logs/
 tags*
+debug/

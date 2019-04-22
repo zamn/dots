@@ -74,6 +74,8 @@ alias nodejs=node
 export MOSH_ESCAPE_KEY=~
 alias prettyxml='xmllint --format -'
 
+alias psql='rlwrap psql'
+
 # Use neovim for all teh things.. for now
 alias vim=nvim
 
@@ -100,8 +102,9 @@ bind -m vi-insert "\C-l":clear-screen
 
 export NVM_DIR="$HOME/.nvm"
 
-export FZF_DEFAULT_COMMAND='ag --nocolor --ignore node_modules -g ""'
+export FZF_DEFAULT_COMMAND='ag --no-color --ignore node_modules -g ""'
 
+[ -f ~/.helpers.bash ] && source ~/.helpers.bash
 [ -f ~/.mac.bash ] && source ~/.mac.bash
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
