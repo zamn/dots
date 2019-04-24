@@ -20,7 +20,8 @@ fbr() {
     }
 
 search() {
-    search_file=`ag --column --color --color-line-number "49;32" --color-match "1;49;91" --color-path "49;95" --pager="fzf --ansi --exit-0 --delimiter=: --preview-window=up --preview 'bat --color=always --line-range {2}: {1}'" --no-break --no-heading -Q "$1"`
+    words=$@
+    search_file=`ag --column --color --color-line-number "49;32" --color-match "1;49;91" --color-path "49;95" --pager="fzf --ansi --exit-0 --delimiter=: --preview-window=up:80% --preview 'bat --color=always --line-range {2}: {1}'" --no-break --no-heading -Q "$words"`
     if [[ ! -z "$search_file" ]]
     then
         line=`echo $search_file | awk '{print $1}'`
@@ -28,7 +29,7 @@ search() {
         match_column=`echo $search_file | awk -F: '{print $3}'`
         file_name=`echo $search_file | awk -F: '{print $1}'`
 
-        nvim -c "/$1" "+call cursor($line_number, $match_column)" "$file_name" && search $1
+        nvim -c "/$words" "+call cursor($line_number, $match_column)" "$file_name" && search $words
     fi
 }
 
