@@ -43,12 +43,7 @@ export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quo
 # disable vim ctrl+s freeze terminal
 stty -ixon
 
-export TERM=xterm-256color
-has_keychain=`which keychain; echo $?`
-if [[ "$has_keychain" -eq 0 ]]
-then
-  eval `keychain --nogui --eval --agents ssh,gpg --inherit any id_rsa 1DA873783B64AB1F`
-fi
+export TERM=screen-256color
 
 PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
 
@@ -104,8 +99,17 @@ export NVM_DIR="$HOME/.nvm"
 
 export FZF_DEFAULT_COMMAND='ag --no-color --ignore node_modules -g ""'
 
-[ -f ~/.helpers.bash ] && source ~/.helpers.bash
-[ -f ~/.mac.bash ] && source ~/.mac.bash
+platform=$(uname)
+
+
+if [[ "$platform" -ne "Linux" ]]
+then
+    [ -f ~/.mac.bash ] && source ~/.mac.bash
+else
+    [ -f ~/.linux.bash ] && source ~/.linux.bash
+fi
+
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+[ -f ~/.helpers.bash ] && source ~/.helpers.bash
 
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
