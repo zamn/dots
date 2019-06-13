@@ -29,8 +29,6 @@ Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install() }}
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 
-Plug 'jiangmiao/auto-pairs'
-
 Plug 'pangloss/vim-javascript'
 Plug 'othree/yajs.vim'
 
@@ -41,6 +39,14 @@ Plug 'HerringtonDarkholme/yats.vim'
 Plug 'scrooloose/nerdtree'
 
 Plug 'liuchengxu/vista.vim'
+
+Plug 'raimondi/delimitmate'
+
+Plug 'tpope/vim-commentary'
+
+Plug 'romainl/vim-qf'
+
+" go into file = gf, <c-w>gf (new tab), <c-w>f (new split)
 
 " UndotreeToggle
 Plug 'mbbill/undotree'
@@ -92,8 +98,6 @@ let g:airline#extensions#tabline#tab_nr_type= 2
 let g:airline#extensions#tabline#show_tab_type = 1
 
 let g:ale_lint_on_text_changed = 'never'
-
-let g:AutoPairsMapCR=0
 
 " use <tab> for trigger completion and navigate to next complete item
 function! s:check_back_space() abort
@@ -297,16 +301,12 @@ set foldlevel=50
 " za,zc,zo - zA, zC, zO
 "map <leader>ft za<cr>
 
-"  nmap <silent> gd <Plug>(coc-definition)
-"  nmap <silent> gy <Plug>(coc-type-definition)
-"  nmap <silent> gi <Plug>(coc-implementation)
-"  nmap <silent> gr <Plug>(coc-references)
-
-"nmap <leader>td :call CocActionAsync('jumpDefinition')<cr>
 nmap <leader>td <Plug>(coc-definition)
 nmap <leader>ttd <Plug>(coc-type-definition)
 nmap <leader>ti <Plug>(coc-implementation)
 nmap <leader>tr <Plug>(coc-references)
+
+nmap <leader>ec :call EditCompiledVersion()<CR>
 
 " Disable highlight when <leader><cr> is pressed
 map <silent> <leader><cr> :noh<cr>
@@ -426,8 +426,8 @@ map <leader>pp :setlocal paste!<cr>
 
 
 " let me navigate errors via leader n/p
-map <leader>n :lnext<cr>
-map <leader>p :lprev<cr>
+map <leader>n <Plug>(qf_qf_next)
+map <leader>p <Plug>(qf_qf_previous)
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Helper functions
@@ -487,4 +487,12 @@ function! <SID>BufcloseCloseIt()
    if buflisted(l:currentBufNum)
      execute("bdelete! ".l:currentBufNum)
    endif
+endfunction
+
+function! EditCompiledVersion()
+    if &ft == "typescript"
+        execute("tabnew dist-server/" . expand("%:r") . ".js")
+    else
+        execute("tabnew dist-server/" . expand("%:."))
+    endif
 endfunction

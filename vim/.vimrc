@@ -47,7 +47,7 @@ Plug 'moll/vim-node'
 
 " Tag file management
 Plug 'xolox/vim-misc'
-Plug 'xolox/vim-easytags'
+Plug 'Wraul/vim-easytags', { 'branch': 'fix-universal-detection' }
 
 " Eslint Integration
 Plug 'scrooloose/syntastic'
@@ -140,7 +140,7 @@ let g:AutoClosePumvisible = {"ENTER": "<C-Y>", "ESC": "<ESC>"}
 
 " disable annoying
 let g:ycm_add_preview_to_completeopt = 0
-set completeopt-=preview 
+set completeopt-=preview
 
 " Sets how many lines of history VIM has to remember
 set history=700
@@ -163,7 +163,7 @@ let g:mapleader = " "
 let g:go_fmt_command = "goimports"
 let g:go_fmt_autosave = 1
 
-" :W sudo saves the file 
+" :W sudo saves the file
 " (useful for handling the permission-denied error)
 " command Ws w !sudo tee % > /dev/null
 
@@ -202,16 +202,16 @@ set ignorecase
 set hlsearch
 
 " Makes search act like search in modern browsers
-set incsearch 
+set incsearch
 
 " Don't redraw while executing macros (good performance config)
-set lazyredraw 
+set lazyredraw
 
 " For regular expressions turn magic on
 set magic
 
 " Show matching brackets when text indicator is over them
-set showmatch 
+set showmatch
 " How many tenths of a second to blink when matching brackets
 set mat=2
 
@@ -228,7 +228,7 @@ set foldcolumn=1
 " => Colors and Fonts
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Enable syntax highlighting
-syntax enable 
+syntax enable
 
 " Enable 256 colors in vim (regardless of terminal or gui)
 set t_Co=256
@@ -341,7 +341,7 @@ map <leader>te :vsplit test/%:r_test.js<cr>
 " Switch CWD to the directory of the open buffer
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
 
-" Specify the behavior when switching between buffers 
+" Specify the behavior when switching between buffers
 try
   set switchbuf=useopen,usetab,newtab
   set stal=2
@@ -420,7 +420,7 @@ if executable('ag')
 
   " ag is fast enough that CtrlP doesn't need to cache
   let g:ctrlp_use_caching = 0
-endif 
+endif
 
 " bind K to grep word under cursor
 nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>"
@@ -478,7 +478,7 @@ function! CmdLine(str)
     exe "menu Foo.Bar :" . a:str
     emenu Foo.Bar
     unmenu Foo
-endfunction 
+endfunction
 
 function! VisualSelection(direction, extra_filter) range
     let l:saved_reg = @"

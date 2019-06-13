@@ -21,7 +21,7 @@ fbr() {
 
 search() {
     words=$@
-    search_file=`ag --column --color --color-line-number "49;32" --color-match "1;49;91" --color-path "49;95" --pager="fzf --ansi --exit-0 --delimiter=: --preview-window=up:80% --preview 'bat --color=always --line-range {2}: {1}'" --no-break --no-heading -Q "$words"`
+    search_file=`ag --column --color --color-line-number "49;32" --color-match "1;49;91" --color-path "49;95" --pager="fzf --ansi --exit-0 --delimiter=: --preview-window=up:70% --preview 'bat --color=always --line-range {2}: {1}'" --no-break --no-heading -Q "$words"`
     if [[ ! -z "$search_file" ]]
     then
         line=`echo $search_file | awk '{print $1}'`
@@ -33,17 +33,60 @@ search() {
     fi
 }
 
-# Select a running docker container to stop
-function dr() {
-  local cid
-  cid=$(docker ps | sed 1d | fzf -q "$1" | awk '{print $1}')
+vfzf() {
+    if [[ ! -z "$1" ]]
+    then
+        if [[ ! -z "$2" ]]
+        then
+            if [[ "$2" -eq "dist" ]]
+            then
+                find_files=`find -E . -type file -iregex ".*(dist-server|dist)\/+.*${1}.*" -not -path '*/node_modules/*' -not -path '*/.git/*' `
+                echo $find_files
+                files=`echo -e "$find_files" | fzf -m -1`
+            fi
+        else
+            find_files=`find . -type file -regex ".*${1}.*" -not -path '*/node_modules/*' -not -path '*/.git/*' -not -path '*/dist/*' -not -path '*/dist-server/*' `
+            files=`echo -e "$find_files" | fzf -m -1`
+        fi
+    else
+        files=`fzf -m`
+    fi
 
-  [ -n "$cid" ] && docker-compose restart "$cid"
+    if [[ ! -z "${files// /\\ }" ]]
+    then
+        file_count=`echo "$find_files" | wc -l`
+        eval vim -O ${files// /\\ }
+        if [[ $file_count -gt 1 ]]
+        then
+            vfzf $1 $2
+        fi
+    fi
+}
+
+printLog() {
+    jq '. | .msg |= split("\n")'
+}
+
+# Select a running docker container to stop
+dr() {
+    local cid
+    cid=$(docker ps | sed 1d | fzf -q "$1" | awk '{print $1}')
+
+    [ -n "$cid" ] && docker-compose restart "$cid"
+}
+
+dc() {
+    compose_file="docker-compose.yml"
+    echo "docker-compose $@"
 }
 
 #lpass show -c --password $(lpass ls  | fzf | awk '{print $(NF)}' | sed 's/\]//g')
 
+export -f dc
+export -f printLog
 export -f fshow
+export -f vfzf
 export -f fbr
+export -f frbr
 export -f dr
 export -f search

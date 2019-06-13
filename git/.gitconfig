@@ -15,7 +15,7 @@
   d = diff
   ds = diff --cached
   co = checkout
-  lol = log -p --reverse master..HEAD
+  lol = log -p --reverse development..HEAD
   b = branch --sort=-committerdate -vva
   fl = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
   puom = push origin master

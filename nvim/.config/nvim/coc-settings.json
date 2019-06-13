@@ -1,0 +1,4 @@
+{
+    "git.enableGutters": false,
+    "tsserver.log": "verbose"
+}
