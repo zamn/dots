@@ -102,7 +102,7 @@ export FZF_DEFAULT_COMMAND='ag --no-color --ignore node_modules -g ""'
 platform=$(uname)
 
 
-if [[ "$platform" -ne "Linux" ]]
+if [[ "$platform" != "Linux" ]]
 then
     [ -f ~/.mac.bash ] && source ~/.mac.bash
 else

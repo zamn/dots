@@ -19,6 +19,15 @@ fbr() {
         git checkout $(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")
     }
 
+# Make this a function to checkout remote branch
+frbr() {
+    remote_branch=`git b -r | fzf | awk '{print $1}'`
+    if [[ ! -z "$remote_branch" ]]
+    then
+        git checkout $(echo $remote_branch | sed 's/origin\///g')
+    fi
+}
+
 search() {
     words=$@
     search_file=`ag --column --color --color-line-number "49;32" --color-match "1;49;91" --color-path "49;95" --pager="fzf --ansi --exit-0 --delimiter=: --preview-window=up:70% --preview 'bat --color=always --line-range {2}: {1}'" --no-break --no-heading -Q "$words"`
@@ -45,7 +54,7 @@ vfzf() {
                 files=`echo -e "$find_files" | fzf -m -1`
             fi
         else
-            find_files=`find . -type file -regex ".*${1}.*" -not -path '*/node_modules/*' -not -path '*/.git/*' -not -path '*/dist/*' -not -path '*/dist-server/*' `
+            find_files=`find . -type file -iregex ".*${1}.*" -not -path '*/node_modules/*' -not -path '*/.git/*' -not -path '*/dist/*' -not -path '*/dist-server/*' `
             files=`echo -e "$find_files" | fzf -m -1`
         fi
     else
