@@ -24,7 +24,7 @@ Plug 'bling/vim-airline'
 
 Plug 'fatih/vim-go'
 
-Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install() }}
+Plug 'neoclide/coc.nvim', {'tag': '*', 'do': './install.sh'}
 
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
