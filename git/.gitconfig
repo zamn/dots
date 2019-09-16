@@ -36,3 +36,5 @@
   program = gpg
 [url "git://"]
   insteadOf = https://
+[branch]
+	autoSetupMerge = always
