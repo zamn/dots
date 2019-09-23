@@ -20,6 +20,7 @@
   b = branch --sort=-committerdate -vva
   fl = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
   get = "!f() { git co $1 && git pull origin $1 && git co -; }; f"
+  pushf = "push --force-with-lease"
 [push]
   default = current
 [fetch]
