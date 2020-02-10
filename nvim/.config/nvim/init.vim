@@ -24,13 +24,16 @@ Plug 'bling/vim-airline'
 
 Plug 'fatih/vim-go'
 
-Plug 'neoclide/coc.nvim', {'tag': '*', 'do': './install.sh'}
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 
 Plug 'pangloss/vim-javascript'
+Plug 'leafgarland/typescript-vim'
 Plug 'othree/yajs.vim'
+
+Plug 'jparise/vim-graphql'
 
 Plug 'moll/vim-node'
 
@@ -148,11 +151,17 @@ let g:rbpt_colorpairs = [
 " airline Font Fix
 let g:airline_powerline_fonts = 1
 
+set history=1000
+set undolevels=1000
+set title
+
 set completeopt-=preview
 
 " Enable filetype plugins
 filetype plugin on
 filetype indent on
+
+setlocal indentkeys+=0.
 
 " With a map leader it's possible to do extra key combinations
 " like <leader>w saves the current file
@@ -175,9 +184,9 @@ let g:mapleader = " "
 " Ignore compiled files
 set wildignore=*.o,*~,*.pyc
 if has("win16") || has("win32")
-    set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store
+    set wildignore+=*/.hg/*,*/.svn/*,*/.DS_Store
 else
-    set wildignore+=.git\*,.hg\*,.svn\*
+    set wildignore+=.hg\*,.svn\*
 endif
 
 " Height of the command bar
@@ -317,16 +326,21 @@ map <C-k> <C-W>k
 map <C-h> <C-W>h
 map <C-l> <C-W>l
 
-" Close the current buffer
-map <leader>bd :Bclose<cr>
-
 " Close all the buffers
 map <leader>ba :1,1000 bd!<cr>
+
+map <leader>r :so $MYVIMRC<cr>
 
 " Useful mappings for managing tabs
 map <leader>tn :tabnext<cr>
 map <leader>tp :tabprev<cr>
-map <leader>tc :tabclose<cr>
+map <leader>tc :tabnew<cr>
+
+" Useful mappings for managing buffers
+map <leader>bn :bn<cr>
+map <leader>bp :bp<cr>
+" Close the current buffer
+map <leader>bd :Bclose<cr>
 
 " Specify the behavior when switching between buffers
 try
@@ -401,9 +415,20 @@ endif
 " To go to the previous search results do:
 "   <leader>p
 "
-map <leader>cc :botright cope<cr>
+map <leader>cc :call QuickfixToggle()<cr>
 map <leader>co ggVGy:tabnew<cr>:set syntax=qf<cr>pgg
 
+let g:quickfix_is_open = 0
+
+function! QuickfixToggle()
+    if g:quickfix_is_open
+        lclose
+        let g:quickfix_is_open = 0
+    else
+        lopen
+        let g:quickfix_is_open = 1
+    endif
+endfunction
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Spell checking

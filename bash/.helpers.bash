@@ -15,7 +15,7 @@ fbr() {
     local branches branch
     branches=$(git for-each-ref --count=100 --sort=-committerdate refs/heads/ --format="%(refname:short)") &&
         branch=$(echo "$branches" |
-        fzf-tmux -d $(( 2 + $(wc -l <<< "$branches") )) +m) &&
+        fzf -d $(( 2 + $(wc -l <<< "$branches") )) +m) &&
         git checkout $(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")
     }
 
@@ -30,7 +30,21 @@ frbr() {
 
 search() {
     words=$@
-    search_file=`ag --column --color --color-line-number "49;32" --color-match "1;49;91" --color-path "49;95" --pager="fzf --ansi --exit-0 --delimiter=: --preview-window=up:70% --preview 'bat --color=always --line-range {2}: {1}'" --no-break --no-heading -Q "$words"`
+    search_file=`ag --hidden --ignore-dir .git --column --color --color-line-number "49;32" --color-match "1;49;91" --color-path "49;95" --pager="fzf --ansi --exit-0 --delimiter=: --preview-window=up:70% --preview 'bat --color=always --line-range {2}: {1}'" --no-break --no-heading -Q "$words"`
+    if [[ ! -z "$search_file" ]]
+    then
+        line=`echo $search_file | awk '{print $1}'`
+        line_number=`echo $search_file | awk -F: '{print $2}'`
+        match_column=`echo $search_file | awk -F: '{print $3}'`
+        file_name=`echo $search_file | awk -F: '{print $1}'`
+
+        nvim -c "/$words" "+call cursor($line_number, $match_column)" "$file_name" && search $words
+    fi
+}
+
+wsearch() {
+    words=$@
+    search_file=`ag -u --column --color --color-line-number "49;32" --color-match "1;49;91" --color-path "49;95" --pager="fzf --ansi --exit-0 --delimiter=: --preview-window=up:70% --preview 'bat --color=always --line-range {2}: {1}'" --no-break --no-heading -Q "$words"`
     if [[ ! -z "$search_file" ]]
     then
         line=`echo $search_file | awk '{print $1}'`
@@ -73,7 +87,7 @@ vfzf() {
 }
 
 printLog() {
-    jq '. | .msg |= split("\n")'
+    jq '. | .msg |= split("\n") | .err.stack |= split("\n")'
 }
 
 # Select a running docker container to stop

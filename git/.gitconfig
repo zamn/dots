@@ -13,6 +13,7 @@
 [alias]
   s = status
   d = diff
+  df = "!git diff -U$(wc -l \"$1\" | awk '{print $1}') \"$1\""
   dnw = diff --cached --ignore-all-space
   ds = diff --cached
   co = checkout
@@ -38,3 +39,5 @@
   insteadOf = https://
 [branch]
 	autoSetupMerge = always
+[rerere]
+	enabled = true

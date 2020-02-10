@@ -99,8 +99,14 @@ export NVM_DIR="$HOME/.nvm"
 
 export FZF_DEFAULT_COMMAND='ag --no-color --ignore node_modules -g ""'
 
-platform=$(uname)
+function sshtmux() {
+    PROMPT_COMMAND='echo -en "\033]0;devbox\a"'
+    ssh $1 -t tmux new -A -s dev
+}
 
+export sshtmux
+
+platform=$(uname)
 
 if [[ "$platform" != "Linux" ]]
 then

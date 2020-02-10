@@ -5,6 +5,8 @@ have() {
 
 export -f have
 
+alias firefox="open -a /Applications/Firefox.app"
+
 if [[ -f ~/.homebrew.bash ]]
 then
     source ~/.homebrew.bash
@@ -18,6 +20,8 @@ then
         . $f 2>/dev/null
     done
 fi
+
+alias kitty='/Applications/kitty.app/Contents/MacOS/kitty'
 
 export NVM_DIR="$HOME/.nvm"
 
