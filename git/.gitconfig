@@ -17,6 +17,7 @@
   dnw = diff --cached --ignore-all-space
   ds = diff --cached
   co = checkout
+  fa = fetch --all
   lol = log -p --reverse development..HEAD
   b = branch --sort=-committerdate -vva
   fl = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative

@@ -47,7 +47,7 @@ Plug 'moll/vim-node'
 
 " Tag file management
 Plug 'xolox/vim-misc'
-Plug 'Wraul/vim-easytags', { 'branch': 'fix-universal-detection' }
+" Plug 'Wraul/vim-easytags', { 'branch': 'fix-universal-detection' }
 
 " Eslint Integration
 Plug 'scrooloose/syntastic'

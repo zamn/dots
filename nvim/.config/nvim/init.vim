@@ -28,6 +28,7 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-dispatch'
 
 Plug 'pangloss/vim-javascript'
 Plug 'leafgarland/typescript-vim'
@@ -113,6 +114,8 @@ inoremap <silent><expr> <TAB>
       \ <SID>check_back_space() ? "\<TAB>" :
       \ coc#refresh()
 
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
 nnoremap <c-p> :Files<cr>
 
 " Zoom / Restore window.
@@ -156,6 +159,10 @@ set undolevels=1000
 set title
 
 set completeopt-=preview
+
+" Might want this need to investigate more
+" Set local dir to vim file dir
+" set autochdir
 
 " Enable filetype plugins
 filetype plugin on
@@ -316,6 +323,18 @@ nmap <leader>ti <Plug>(coc-implementation)
 nmap <leader>tr <Plug>(coc-references)
 
 nmap <leader>ec :call EditCompiledVersion()<CR>
+
+nmap <leader>mt :execute "Dispatch ./node_modules/.bin/mocha --require source-map-support/register --recursive --exit " . GetCompiledVersion()<CR>
+
+hi CocErrorFloat ctermfg=white guifg=white ctermbg=brown
+hi CocInfoFloat ctermfg=darkblue guifg=darkblue
+hi CocWarningFloat ctermfg=brown guifg=brown
+
+hi Pmenu ctermbg=gray guibg=gray ctermfg=black guifg=black
+hi PmenuSel ctermbg=darkgray guibg=darkgray ctermfg=black guifg=black
+"hi link Pmenu PmenuSel
+hi link Pmenu PmenuSbar
+hi link Pmenu PmenuThumb
 
 " Disable highlight when <leader><cr> is pressed
 map <silent> <leader><cr> :noh<cr>
@@ -515,9 +534,13 @@ function! <SID>BufcloseCloseIt()
 endfunction
 
 function! EditCompiledVersion()
+    execute("tabnew " . GetCompiledVersion())
+endfunction
+
+function! GetCompiledVersion()
     if &ft == "typescript"
-        execute("tabnew dist-server/" . expand("%:r") . ".js")
+        return "dist-server/" . expand("%:r") . ".js"
     else
-        execute("tabnew dist-server/" . expand("%:."))
+        return "dist-server/" . expand("%:.")
     endif
 endfunction

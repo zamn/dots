@@ -63,12 +63,12 @@ vfzf() {
         then
             if [[ "$2" -eq "dist" ]]
             then
-                find_files=`find -E . -type file -iregex ".*(dist-server|dist)\/+.*${1}.*" -not -path '*/node_modules/*' -not -path '*/.git/*' `
+                find_files=`find -E . -type f -iregex ".*(dist-server|dist)\/+.*${1}.*" -not -path '*/node_modules/*' -not -path '*/.git/*' `
                 echo $find_files
                 files=`echo -e "$find_files" | fzf -m -1`
             fi
         else
-            find_files=`find . -type file -iregex ".*${1}.*" -not -path '*/node_modules/*' -not -path '*/.git/*' -not -path '*/dist/*' -not -path '*/dist-server/*' `
+            find_files=`find . -type f -iregex ".*${1}.*" -not -path '*/node_modules/*' -not -path '*/.git/*' -not -path '*/dist/*' -not -path '*/dist-server/*' `
             files=`echo -e "$find_files" | fzf -m -1`
         fi
     else
