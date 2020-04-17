@@ -1,0 +1,21 @@
+"pamixer --decrease 10 --allow-boost && exec pkill -RTMIN+10 i3blocks"
+  XF86AudioLowerVolume
+"pamixer --increase 10 --allow-boost && exec pkill -RTMIN+10 i3blocks"
+  XF86AudioRaiseVolume
+"pamixer -t && exec pkill -RTMIN+10 i3blocks"
+  XF86AudioMute
+
+"playerctl play-pause"
+  XF86AudioPlay
+
+"playerctl next"
+ XF86AudioNext
+
+"playerctl previous"
+ XF86AudioPrev
+
+"~/.bin/adjust_brightness -5"
+  XF86MonBrightnessDown
+"~/.bin/adjust_brightness +5"
+  XF86MonBrightnessUp
+

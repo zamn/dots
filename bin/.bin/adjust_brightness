@@ -1,0 +1,13 @@
+#!/bin/bash
+
+brightness_path=/sys/class/backlight/intel_backlight/brightness
+brightness=$(cat $brightness_path)
+
+result=$(($brightness $1))
+
+if [[ $result -le 0 ]]
+then
+  echo 0 > $brightness_path
+else
+  echo $result > $brightness_path
+fi
