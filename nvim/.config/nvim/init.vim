@@ -176,9 +176,8 @@ let mapleader = " "
 let g:maplocalleader = " "
 let g:mapleader = " "
 
-" Go stuff
-" let g:go_fmt_command = "goimports"
-" let g:go_fmt_autosave = 1
+" Golang stuff
+autocmd BufWritePre *.go :call CocAction('runCommand', 'editor.action.organizeImport')
 
 " :W sudo saves the file
 " (useful for handling the permission-denied error)

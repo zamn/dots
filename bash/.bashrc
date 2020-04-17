@@ -95,8 +95,6 @@ export PATH=$PATH:$HOME/.local/bin
 export EDITOR=vim
 bind -m vi-insert "\C-l":clear-screen
 
-export NVM_DIR="$HOME/.nvm"
-
 export FZF_DEFAULT_COMMAND='ag --no-color --ignore node_modules -g ""'
 
 function sshtmux() {
