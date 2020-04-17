@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+if [[ -z "$STEP" ]] ; then
+    STEP="${1:-5}"
+fi
+
+capability() { # Return "Capture" if the device is a capture device
+  pamixer -D $MIXER get $SCONTROL |
+    sed -n "s/  Capabilities:.*cvolume.*/Capture/p"
+}
+
+volume() {
+  pamixer --get-volume
+}
+
+format() {
+  echo "$LABEL$output"
+}
+
+case $BLOCK_BUTTON in
+  3) pamixer -t ;;  # right click, mute/unmute
+  4) pamixer --increase ${STEP} --allow-boost ;; # scroll up, increase
+  5) pamixer --decrease ${STEP}  ;; # scroll down, decrease
+esac
+
+is_mute=`pamixer --get-mute`
+if [[ $is_mute = "true" ]]
+then
+  echo "${LABEL}0%"
+else
+  echo "$LABEL`volume`%"
+fi

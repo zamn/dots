@@ -1,0 +1,269 @@
+# i3 config file (v4)
+#
+# Please see https://i3wm.org/docs/userguide.html for a complete reference!
+#
+
+set $mod Mod4
+
+# font for window titles. ISO 10646 = Unicode
+font pango:Droid Sans Mono 10
+#font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
+
+# Use Mouse+$mod to drag floating windows to their wanted position
+floating_modifier $mod
+
+# start a terminal
+bindsym $mod+Return exec i3-sensible-terminal
+
+# kill focused window
+bindsym $mod+Shift+quotedbl kill
+
+# start dmenu (a program launcher)
+bindsym $mod+d exec /usr/sbin/rofi -show run
+
+bindsym $mod+w exec /usr/sbin/rofi -show window
+
+# change focus
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
+
+# alternatively, you can use the cursor keys:
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+# move focused window
+bindsym $mod+Shift+H move left
+bindsym $mod+Shift+J move down
+bindsym $mod+Shift+K move up
+bindsym $mod+Shift+L move right
+
+# alternatively, you can use the cursor keys:
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+# split in horizontal orientation
+bindsym $mod+Shift+v split h
+
+# split in vertical orientation
+bindsym $mod+v split v
+
+# enter fullscreen mode for the focused container
+bindsym $mod+f fullscreen
+
+# change container layout (stacked, tabbed, default)
+bindsym $mod+o layout stacking
+bindsym $mod+comma layout tabbed
+bindsym $mod+period layout default
+
+# toggle tiling / floating
+bindsym $mod+Shift+space floating toggle
+
+# change focus between tiling / floating windows
+bindsym $mod+space focus mode_toggle
+
+# focus the parent container
+bindsym $mod+a focus parent
+
+# focus the child container
+#bindcode $mod+d focus child
+
+set $ws1 "<span foreground='red'>firefox</span>"
+set $ws2 "<span foreground='blue'>chat</span>"
+set $ws3 "<span foreground='green'>dev</span>"
+set $ws4 "<span foreground='white'>sound</span>"
+set $ws6 "<span foreground='yellow'>chrome</span>"
+
+# switch to workspace
+bindsym $mod+1 workspace $ws1
+bindsym $mod+2 workspace $ws2
+bindsym $mod+3 workspace $ws3
+bindsym $mod+4 workspace $ws4
+bindsym $mod+5 workspace 5
+bindsym $mod+6 workspace $ws6
+bindsym $mod+7 workspace  7
+bindsym $mod+8 workspace  8
+bindsym $mod+9 workspace  9
+bindsym $mod+0 workspace  10
+
+# move focused container to workspace
+bindsym $mod+Shift+exclam move container to workspace $ws1
+bindsym $mod+Shift+at move container to workspace $ws2
+bindsym $mod+Shift+numbersign move container to workspace $ws3
+bindsym $mod+Shift+dollar move container to workspace $ws4
+bindsym $mod+Shift+percent move container to workspace 5
+bindsym $mod+Shift+asciicircum move container to workspace $ws6
+bindsym $mod+Shift+ampersand move container to workspace 7
+bindsym $mod+Shift+asterisk move container to workspace 8
+bindsym $mod+Shift+parenleft move container to workspace 9
+bindsym $mod+Shift+parenright move container to workspace 10
+
+# move current workspace between monitors
+bindsym $mod+Control+h move workspace to output left
+bindsym $mod+Control+j move workspace to output down
+bindsym $mod+Control+k move workspace to output up
+bindsym $mod+Control+l move workspace to output right
+
+# Assing apps to workspace
+# assign [class="Firefox"] $ws1
+# assign [class="Franz"] $ws2
+# for_window [class="Spotify"] move to workspace $ws3
+# assign [class="VirtualBox"] $ws4
+# assign [class="TexMaker"] $ws5
+# assign [class="Chromium-browser"] $ws4
+#
+#bindsym Control+1 exec firejail firefox
+#bindsym Control+2 exec pcmanfm 
+#bindsym Control+3 exec leafpad
+#bindsym Control+4 exec spotify
+#
+
+# reload the configuration file
+bindsym $mod+Shift+R reload
+
+# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+bindsym $mod+Shift+T restart
+
+bindsym $mod+Shift+P exec escrotum -s
+
+# bindsym $mod+Control+r exec i3-input -F 'rename workspace to "%s"' -P 'New name: '
+
+# change screen layout 
+mode "screenlayout" {
+        bindsym d exec ~/.screenlayout/home-dual.sh
+        bindsym t exec ~/.screenlayout/home-trie.sh
+        bindsym m exec ~/.screenlayout/mobile.sh
+        bindsym w exec ~/.screenlayout/work.sh
+
+        # back to normal: Enter or Escape
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+
+bindsym $mod+Shift+A mode "screenlayout"
+
+# resize window (you can also use the mouse for that)
+mode "resize" {
+        # These bindings trigger as soon as you enter the resize mode
+
+        # Pressing left will shrink the window’s width.
+        # Pressing right will grow the window’s width.
+        # Pressing up will shrink the window’s height.
+        # Pressing down will grow the window’s height.
+        #bindsym h resize shrink width 10 px or 10 ppt
+        #bindsym t resize grow height 10 px or 10 ppt
+        #bindsym n resize shrink height 10 px or 10 ppt
+        #bindsym s resize grow width 10 px or 10 ppt
+        bindsym h resize shrink width 10 px or 10 ppt
+        bindsym l resize grow width 10 px or 10 ppt
+        bindsym k resize shrink height 10 px or 10 ppt
+        bindsym j resize grow height 10 px or 10 ppt
+
+        # same bindings, but for the arrow keys
+        bindsym 113 resize shrink width 10 px or 10 ppt
+        bindsym 116 resize grow height 10 px or 10 ppt
+        bindsym 111 resize shrink height 10 px or 10 ppt
+        bindsym 114 resize grow width 10 px or 10 ppt
+
+        # back to normal: Enter or Escape
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+
+bindsym $mod+r mode "resize"
+
+#bindsym $mod+Shift+End exec --no-startup-id gksudo poweroff
+#bindsym $mod+Shift+Home exec --no-startup-id gksudo reboot
+bindsym $mod+F2 exec playerctl play-pause
+bindsym $mod+F3 exec playerctl previous
+bindsym $mod+F4 exec playerctl next
+
+# Locker
+bindsym $mod+Shift+Escape exec ~/.i3/i3exit lock
+
+set $bg-color            #2f343f
+set $inactive-bg-color   #2f343f
+set $text-color          #f3f4f5
+set $inactive-text-color #676E7D
+set $urgent-bg-color     #E53935
+
+set $focused-bg-color #262a33
+
+bar {
+  status_command i3blocks
+    font pango:Droid Sans Mono 10, Awesome 9
+    colors {
+      background $bg-color
+        separator #757575
+        focused_workspace  $focused-bg-color          $focused-bg-color          $text-color
+        inactive_workspace $inactive-bg-color $inactive-bg-color $inactive-text-color
+        urgent_workspace   $urgent-bg-color   $urgent-bg-color   $text-color
+    }
+}
+
+client.focused          $bg-color           $bg-color          $text-color          #00ff00
+client.unfocused        $inactive-bg-color $inactive-bg-color $inactive-text-color #00ff00
+client.focused_inactive $inactive-bg-color $inactive-bg-color $inactive-text-color #00ff00
+client.urgent $urgent-bg-color $urgent-bg-color $text-color #00ff00
+
+hide_edge_borders both
+
+set $mode_system System (l) lock, (e) logout, (s) suspend, (h) hibernate, (r) reboot, (Shift+s) shutdown
+mode "$mode_system" {
+    bindsym l exec --no-startup-id ~/.i3/i3exit lock, mode "default"
+    bindsym e exec --no-startup-id ~/.i3/i3exit logout, mode "default"
+    bindsym s exec --no-startup-id ~/.i3/i3exit suspend, mode "default"
+    bindsym h exec --no-startup-id ~/.i3/i3exit hibernate, mode "default"
+    bindsym r exec --no-startup-id ~/.i3/i3exit reboot, mode "default"
+    bindsym Shift+s exec --no-startup-id i3exit shutdown, mode "default"
+
+    # back to normal: Enter or Escape
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $mod+Shift+s mode "$mode_system"
+
+set $network_select Enter Manual (e), Home (h), Work (w), Mobile Hotspot (m)
+mode "$network_select" {
+    bindsym e exec --no-startup-id gksudo netctl stop-all && gksudo netctl 
+# bindsym $mod+Control+r exec i3-input -F 'rename workspace to "%s"' -P 'New name: '
+    bindsym m exec --no-startup-id gksudo ip link set wlp4s0 down && netctl start mobile
+    bindsym h exec --no-startup-id gksudo ip link set wlp4s0 down && netctl start home
+    bindsym w exec --no-startup-id gksudo ip link set wlp4s0 down && netctl start work
+
+    # back to normal: Enter or Escape
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $mod+Shift+n mode "$network_select"
+
+#workspace $ws3 gaps outer 0
+#workspace $ws3 gaps inner 0
+
+gaps inner 25
+gaps outer 0
+
+smart_borders on
+new_window none
+
+smart_gaps on
+
+#for_window [class="google-chrome-stable"] border none
+#for_window [class="gnome-terminal"] border none
+for_window [class="^.*"] border pixel 0
+
+#workspace 1 output DVI-I-1
+#workspace 2 output DVI-D-0
+#workspace 3 output HDMI-0
+
+exec --no-startup-id nitrogen --restore
+exec --no-startup-id ibus-daemon
+exec --no-startup-id xset r rate 250 30
+exec --no-startup-id nm-applet
+
+exec xbindkeys -p
