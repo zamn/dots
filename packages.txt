@@ -68,7 +68,7 @@ gvim
 gzip
 htop
 i3-gaps
-i3blocks-git
+i3blocks
 i3lock-color
 i3status
 inetutils

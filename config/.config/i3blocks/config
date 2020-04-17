@@ -26,7 +26,7 @@
 # Each block command defaults to the script name to avoid boilerplate.
 # Change $SCRIPT_DIR to the location of your scripts!
 #SCRIPT_DIR="/home/zamn/.config/i3blocks"
-command=/home/zamn/.config/i3blocks/$BLOCK_NAME/$BLOCK_NAME
+command=$HOME/.config/i3blocks/$BLOCK_NAME/$BLOCK_NAME
 separator_block_width=15
 markup=none
 
