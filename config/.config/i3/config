@@ -118,7 +118,7 @@ bindsym $mod+Control+l move workspace to output right
 # assign [class="Chromium-browser"] $ws4
 #
 #bindsym Control+1 exec firejail firefox
-#bindsym Control+2 exec pcmanfm 
+#bindsym Control+2 exec pcmanfm
 #bindsym Control+3 exec leafpad
 #bindsym Control+4 exec spotify
 #
@@ -133,7 +133,7 @@ bindsym $mod+Shift+P exec escrotum -s
 
 # bindsym $mod+Control+r exec i3-input -F 'rename workspace to "%s"' -P 'New name: '
 
-# change screen layout 
+# change screen layout
 mode "screenlayout" {
         bindsym d exec ~/.screenlayout/home-dual.sh
         bindsym t exec ~/.screenlayout/home-trie.sh
@@ -184,7 +184,7 @@ bindsym $mod+F3 exec playerctl previous
 bindsym $mod+F4 exec playerctl next
 
 # Locker
-bindsym $mod+Shift+Escape exec ~/.i3/i3exit lock
+bindsym $mod+Shift+Escape exec ~/.bin/i3exit lock
 
 set $bg-color            #2f343f
 set $inactive-bg-color   #2f343f
@@ -215,11 +215,11 @@ hide_edge_borders both
 
 set $mode_system System (l) lock, (e) logout, (s) suspend, (h) hibernate, (r) reboot, (Shift+s) shutdown
 mode "$mode_system" {
-    bindsym l exec --no-startup-id ~/.i3/i3exit lock, mode "default"
-    bindsym e exec --no-startup-id ~/.i3/i3exit logout, mode "default"
-    bindsym s exec --no-startup-id ~/.i3/i3exit suspend, mode "default"
-    bindsym h exec --no-startup-id ~/.i3/i3exit hibernate, mode "default"
-    bindsym r exec --no-startup-id ~/.i3/i3exit reboot, mode "default"
+    bindsym l exec --no-startup-id ~/.bin/i3exit lock, mode "default"
+    bindsym e exec --no-startup-id ~/.bin/i3exit logout, mode "default"
+    bindsym s exec --no-startup-id ~/.bin/i3exit suspend, mode "default"
+    bindsym h exec --no-startup-id ~/.bin/i3exit hibernate, mode "default"
+    bindsym r exec --no-startup-id ~/.bin/i3exit reboot, mode "default"
     bindsym Shift+s exec --no-startup-id i3exit shutdown, mode "default"
 
     # back to normal: Enter or Escape
@@ -230,7 +230,7 @@ bindsym $mod+Shift+s mode "$mode_system"
 
 set $network_select Enter Manual (e), Home (h), Work (w), Mobile Hotspot (m)
 mode "$network_select" {
-    bindsym e exec --no-startup-id gksudo netctl stop-all && gksudo netctl 
+    bindsym e exec --no-startup-id gksudo netctl stop-all && gksudo netctl
 # bindsym $mod+Control+r exec i3-input -F 'rename workspace to "%s"' -P 'New name: '
     bindsym m exec --no-startup-id gksudo ip link set wlp4s0 down && netctl start mobile
     bindsym h exec --no-startup-id gksudo ip link set wlp4s0 down && netctl start home
