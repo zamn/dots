@@ -1,5 +1,3 @@
 export FUGITIVE_GITLAB_PAT=''
-export COMMIT_GPG_KEY=''
-export NPM_TOKEN=''
 export PINEENTRY_PROGRAM=''
 export NPM_CONFIG_TOKEN=''
