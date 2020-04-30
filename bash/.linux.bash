@@ -1,4 +1,3 @@
-export NPM_TOKEN="171637df-8444-4890-85e7-981282aefcdb"
 export DISPLAY=:0.0
 
 source /usr/share/bash-completion/bash_completion
