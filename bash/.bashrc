@@ -74,6 +74,9 @@ alias psql='rlwrap psql'
 # Use neovim for all teh things.. for now
 alias vim=nvim
 
+# list personal cheatz
+alias pcheat='cheat -l -t personal'
+
 # Get all bash completions
 if [[ -f /usr/share/bash-completion/completions/* ]]
 then
