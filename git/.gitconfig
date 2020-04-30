@@ -1,7 +1,7 @@
-[user]
-  name = Adam Hamot
-  email = adamhamot@havenlife.com
-  signingkey = A1E4C38922F640DE
+[includeIf "gitdir:~/work/"]
+  path = ~/work/.gitconfig
+[includeIf "gitdir:~/code/"]
+  path = ~/code/.gitconfig
 [color]
   ui = true
 [diff]
@@ -36,9 +36,7 @@
   rebase = true
 [gpg]
   program = gpg
-[url "git://"]
-  insteadOf = https://
 [branch]
-	autoSetupMerge = always
+    autoSetupMerge = always
 [rerere]
 	enabled = true
