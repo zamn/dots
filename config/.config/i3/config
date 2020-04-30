@@ -137,6 +137,7 @@ bindsym $mod+Shift+P exec escrotum -s
 mode "screenlayout" {
         bindsym d exec ~/.screenlayout/home-dual.sh
         bindsym t exec ~/.screenlayout/home-trie.sh
+        bindsym l exec ~/.screenlayout/home-right-only.sh
         bindsym m exec ~/.screenlayout/mobile.sh
         bindsym w exec ~/.screenlayout/work.sh
 
