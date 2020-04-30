@@ -3,3 +3,4 @@ logs/
 tags*
 debug/
 *.tar
+sql/
