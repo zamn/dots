@@ -119,4 +119,6 @@ fi
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 [ -f ~/.helpers.bash ] && source ~/.helpers.bash
 
+[ -f ~/.keys.bash ] && source ~/.keys.bash
+
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"

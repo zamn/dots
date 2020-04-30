@@ -8,6 +8,9 @@ then
   exit 1
 fi
 
+# TODO: Make this less hacky
+sed "s/\$\PINEENTRY_PROGRAM/$(eval echo $PINEENTRY_PROGRAM | sed 's/\//\\\//g')/g" gnupg/.gnupg/gpg-agent.conf
+
 # stow all files in top level dirs
 for d in `ls -d */ | tr / ' '`
 do
