@@ -26,6 +26,9 @@ Plug 'fatih/vim-go'
 
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
+" This should be after coc.nvim since that sets up yarn for us
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
+
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-dispatch'
