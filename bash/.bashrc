@@ -109,6 +109,10 @@ export sshtmux
 
 platform=$(uname)
 
+# This should be above the other source files since we need this
+# to load the proper npm config key
+[ -f ~/.keys.bash ] && source ~/.keys.bash
+
 if [[ "$platform" != "Linux" ]]
 then
     [ -f ~/.mac.bash ] && source ~/.mac.bash
@@ -118,7 +122,5 @@ fi
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 [ -f ~/.helpers.bash ] && source ~/.helpers.bash
-
-[ -f ~/.keys.bash ] && source ~/.keys.bash
 
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
