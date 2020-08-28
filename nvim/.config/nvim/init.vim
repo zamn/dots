@@ -546,3 +546,6 @@ function! GetCompiledVersion()
         return "dist-server/" . expand("%:.")
     endif
 endfunction
+
+" Load local vim files
+set exrc

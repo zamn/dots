@@ -55,17 +55,52 @@ frbr() {
     fi
 }
 
+_openGitBlame="$_gitLogLineToHash | xargs -I % sh -c 'xdg-open \"$(git remote get-url origin | sed 's/\.git$//g' | sed 's/:/\//g' | sed 's/git\@/https\:\/\//g')/commit/%\"'"
+
+fblame() {
+    f=$1
+    shift
+    csha=""
+    { git log --color=always --pretty=format:%H -- "$f"; echo; } | {
+        while read hash; do
+            res=$(git blame --color-by-age -L"/$1/",+1 $hash -- "$f" 2>/dev/null | sed 's/^//')
+            # my attempt to color.. TODO
+            #res=$(git --no-pager blame -L"/$1/",+1 $hash -- $f | awk '{print $1}' | xargs git --no-pager log -1 --pretty=format:"%C(auto)%h%d %s %C(black)%C(bold)%cr% C(auto)%an" --date=relative)
+            sha=${res%% (*}
+            if [[ "${res}" != "" && "${csha}" != "${sha}" ]]; then
+                #echo "${hash}" # i dont actually need this - looks like it just points to parent commit
+                echo "${res}"
+                csha="${sha}"
+            fi
+        done
+    } | fzf --no-sort --no-multi \
+            --ansi --preview="$_viewGitLogLine" \
+                --header "enter to view, alt-y to copy hash" \
+                --bind "enter:execute:$_viewGitLogLine   | less -R" \
+                --bind "alt-y:execute:$_gitLogLineToHash | xclip -select clipboard" \
+                --bind "alt-o:execute:$_openGitBlame"
+}
+
 search() {
+    if [[ -n "$QUERY" ]]
+    then
+        pager="fzf -q $QUERY --print-query --ansi --exit-0 --delimiter=: --preview-window=up:70% --preview 'bat --color=always --line-range {2}: {1}'"
+    else
+        pager="fzf --print-query --ansi --exit-0 --delimiter=: --preview-window=up:70% --preview 'bat --color=always --line-range {2}: {1}'"
+    fi
     words=$@
-    search_file=`ag --hidden --ignore-dir .git --column --color --color-line-number "49;32" --color-match "1;49;91" --color-path "49;95" --pager="fzf --ansi --exit-0 --delimiter=: --preview-window=up:70% --preview 'bat --color=always --line-range {2}: {1}'" --no-break --no-heading -Q "$words"`
+    search_file=`ag --hidden --ignore-dir .git --column --color --color-line-number "49;32" --color-match "1;49;91" --color-path "49;95" --pager="$pager" --no-break --no-heading -Q "$words"`
+    query=$(echo "$search_file" | head -1)
+    search_result=$(echo "$search_file" | tail -1)
     if [[ ! -z "$search_file" ]]
     then
-        line=`echo $search_file | awk '{print $1}'`
-        line_number=`echo $search_file | awk -F: '{print $2}'`
-        match_column=`echo $search_file | awk -F: '{print $3}'`
-        file_name=`echo $search_file | awk -F: '{print $1}'`
+        line=`echo $search_result | awk '{print $1}'`
+        line_number=`echo $search_result | awk -F: '{print $2}'`
+        match_column=`echo $search_result | awk -F: '{print $3}'`
+        file_name=`echo $search_result | awk -F: '{print $1}'`
 
-        nvim -c "/$words" "+call cursor($line_number, $match_column)" "$file_name" && search $words
+        nvim -c "/$words" "+call cursor($line_number, $match_column)" "$file_name" \
+            && QUERY="$query" search $words
     fi
 }
 

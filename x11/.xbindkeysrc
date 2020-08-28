@@ -19,3 +19,8 @@
 "~/.bin/adjust_brightness +5"
   XF86MonBrightnessUp
 
+# Mouse Buttons
+"xvkbd -xsendevent -text "\[XF86Back]""
+m:0x0 + b:8
+"xvkbd -xsendevent -text "\[XF86Forward]""
+m:0x0 + b:9

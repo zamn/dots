@@ -135,11 +135,10 @@ bindsym $mod+Shift+P exec escrotum -s
 
 # change screen layout
 mode "screenlayout" {
-        bindsym d exec ~/.screenlayout/home-dual.sh
-        bindsym t exec ~/.screenlayout/home-trie.sh
-        bindsym l exec ~/.screenlayout/home-right-only.sh
+        bindsym h exec ~/.screenlayout/main-only.sh
         bindsym m exec ~/.screenlayout/mobile.sh
         bindsym w exec ~/.screenlayout/work.sh
+        bindsym a exec arandr; mode "default"
 
         # back to normal: Enter or Escape
         bindsym Return mode "default"
