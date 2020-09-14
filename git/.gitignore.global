@@ -3,4 +3,5 @@ logs/
 tags*
 debug/
 *.tar
-sql/
+/sql/
+.nvimrc
