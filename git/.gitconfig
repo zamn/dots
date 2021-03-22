@@ -8,6 +8,7 @@
   renames = copies
   algorithm = patience
   compactionHeuristic = true
+  tool = vimdiff
 [merge]
   conflictStyle = diff3
 [alias]
