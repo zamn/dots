@@ -13,7 +13,7 @@ font pango:Droid Sans Mono 10
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec i3-sensible-terminal
+bindsym $mod+Return exec /usr/sbin/kitty
 
 # kill focused window
 bindsym $mod+Shift+quotedbl kill
@@ -79,17 +79,17 @@ set $ws3 "<span foreground='green'>dev</span>"
 set $ws4 "<span foreground='white'>sound</span>"
 set $ws6 "<span foreground='yellow'>chrome</span>"
 
-# switch to workspace
-bindsym $mod+1 workspace $ws1
-bindsym $mod+2 workspace $ws2
-bindsym $mod+3 workspace $ws3
-bindsym $mod+4 workspace $ws4
-bindsym $mod+5 workspace 5
-bindsym $mod+6 workspace $ws6
-bindsym $mod+7 workspace  7
-bindsym $mod+8 workspace  8
-bindsym $mod+9 workspace  9
-bindsym $mod+0 workspace  10
+# switch to workspace OR move to next window in current one
+bindsym $mod+1 exec ~/.bin/switch-or-next.sh $ws1
+bindsym $mod+2 exec ~/.bin/switch-or-next.sh $ws2
+bindsym $mod+3 exec ~/.bin/switch-or-next.sh $ws3
+bindsym $mod+4 exec ~/.bin/switch-or-next.sh $ws4
+bindsym $mod+5 exec ~/.bin/switch-or-next.sh 5
+bindsym $mod+6 exec ~/.bin/switch-or-next.sh $ws6
+bindsym $mod+7 exec ~/.bin/switch-or-next.sh  7
+bindsym $mod+8 exec ~/.bin/switch-or-next.sh  8
+bindsym $mod+9 exec ~/.bin/switch-or-next.sh  9
+bindsym $mod+0 exec ~/.bin/switch-or-next.sh  10
 
 # move focused container to workspace
 bindsym $mod+Shift+exclam move container to workspace $ws1
@@ -129,7 +129,7 @@ bindsym $mod+Shift+R reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym $mod+Shift+T restart
 
-bindsym $mod+Shift+P exec escrotum -s
+bindsym $mod+Shift+P exec escrotum -s %Y-%m-%d-%H%M%S_$wx$h.png
 
 # bindsym $mod+Control+r exec i3-input -F 'rename workspace to "%s"' -P 'New name: '
 
@@ -138,6 +138,7 @@ mode "screenlayout" {
         bindsym h exec ~/.screenlayout/main-only.sh
         bindsym m exec ~/.screenlayout/mobile.sh
         bindsym w exec ~/.screenlayout/work.sh
+        bindsym p exec ~/.screenlayout/presentation.sh
         bindsym a exec arandr; mode "default"
 
         # back to normal: Enter or Escape
