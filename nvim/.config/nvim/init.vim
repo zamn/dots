@@ -65,6 +65,7 @@ Plug 'xolox/vim-misc'
 
 " GIIIIIT
 Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-rhubarb'
 Plug 'shumphrey/fugitive-gitlab.vim'
 Plug 'gregsexton/gitv', {'on': ['Gitv']}
 

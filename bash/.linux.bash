@@ -19,10 +19,11 @@ export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 mm_vpn() {
     if [[ "$1" = "d" ]]
     then
-        ssh mac /opt/cisco/anyconnect/bin/vpn disconnect
+        ssh -o ServerAliveInterval=2 -o ServerAliveCountMax=1 mac /opt/cisco/anyconnect/bin/vpn disconnect
     else
-        ssh mac /opt/cisco/anyconnect/bin/vpn connect "$VPN"
+        ssh -o ServerAliveInterval=2 -o ServerAliveCountMax=1 mac /opt/cisco/anyconnect/bin/vpn connect "$VPN"
     fi
+
 }
 
 export -f mm_vpn

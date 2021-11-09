@@ -2,6 +2,9 @@
 # do not bell on tab-completion
 set bell-style none
 
+set colored-stats On
+set completion-prefix-display-length 3
+
 set meta-flag on
 set input-meta on
 set convert-meta off

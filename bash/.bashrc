@@ -102,7 +102,14 @@ export FZF_DEFAULT_COMMAND='ag --no-color --ignore node_modules -g ""'
 
 function sshtmux() {
     PROMPT_COMMAND='echo -en "\033]0;devbox\a"'
-    ssh $1 -t tmux new -A -s dev
+    echo "$1"
+    if [[ "$1" = "mac" ]]
+    then
+        tmux_command="/usr/local/bin/tmux"
+    else
+        tmux_command="tmux"
+    fi
+    ssh $1 -t "$tmux_command" new -A -s dev
 }
 
 export sshtmux
