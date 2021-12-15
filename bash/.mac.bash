@@ -5,8 +5,6 @@ have() {
 
 export -f have
 
-alias firefox="open -a /Applications/Firefox.app"
-
 if [[ -f ~/.homebrew.bash ]]
 then
     source ~/.homebrew.bash
@@ -29,3 +27,17 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "/usr/local/opt/nvm/etc/bash_completion" ] && . "/usr/local/opt/nvm/etc/bash_completion"  # This loads nvm bash_completion
 
 export GPG_TTY=$(tty)
+
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+unset LC_COLLATE
+unset LC_CTYPE
+unset LC_MESSAGES
+unset LC_MONETARY
+unset LC_NUMERIC
+unset LC_TIME
+
+if [[ -n "$TMUX" ]]
+then
+    export DISPLAY="$(tmux show-env | sed -n 's/^DISPLAY=//p')"
+fi

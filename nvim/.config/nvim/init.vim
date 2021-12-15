@@ -17,7 +17,6 @@ call plug#begin('~/.local/share/nvim/plugged')
 Plug 'junegunn/vim-easy-align'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-Plug 'w0rp/ale'
 
 "liuchengxu/eleline.vim
 Plug 'bling/vim-airline'
@@ -69,34 +68,48 @@ Plug 'tpope/vim-rhubarb'
 Plug 'shumphrey/fugitive-gitlab.vim'
 Plug 'gregsexton/gitv', {'on': ['Gitv']}
 
+Plug 'prettier/vim-prettier', {
+  \ 'do': 'yarn install',
+  \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html'] }
+
 call plug#end()
 
 if !empty(glob('$HOME/.config/nvim/gitlab.vim'))
   source $HOME/.config/nvim/gitlab.vim
 endif
 
+if !empty(glob('$HOME/.config/nvim/remote-vim.vim'))
+  source $HOME/.config/nvim/remote-vim.vim
+endif
+
 function! NearestMethodOrFunction() abort
   return get(b:, 'vista_nearest_method_or_function', '')
 endfunction
 
+let g:airline#extensions#coc#enabled = 1
+
 set statusline+=%{NearestMethodOrFunction()}
 
-" Error and warning signs.
-let g:ale_sign_error = '⤫'
-let g:ale_sign_warning = '⚠'
+set statusline^=%{coc#status()}
+
+" Add `%{StatusDiagnostic()}` to your 'statusline' option.
+function! StatusDiagnostic() abort
+    let info = get(b:, 'coc_diagnostic_info', {})
+    if empty(info) | return '' | endif
+    let msgs = []
+    if get(info, 'error', 0)
+        call add(msgs, 'E' . info['error'])
+    endif
+    if get(info, 'warning', 0)
+        call add(msgs, 'W' . info['warning'])
+    endif
+    return join(msgs, ' ') . ' ' . get(g:, 'coc_status', '')
+endfunction
 
 " CTRL-W < Decrease current window width by N (default 1).
 " CTRL-W > Increase current window width by N (default 1).
 let g:NERDTreeWinSize=35
 map <F2> :NERDTreeToggle<CR>
-
-let g:ale_linters = {
-\   'javascript': ['eslint'],
-\   'typescript': ['tslint'],
-\}
-
-" Enable integration with airline.
-let g:airline#extensions#ale#enabled = 1
 
 let g:airline#extensions#tabline#formatter = 'unique_tail'
 
@@ -105,13 +118,16 @@ let g:airline#extensions#tabline#show_tab_nr = 1
 let g:airline#extensions#tabline#tab_nr_type= 2
 let g:airline#extensions#tabline#show_tab_type = 1
 
-let g:ale_lint_on_text_changed = 'never'
-
 " use <tab> for trigger completion and navigate to next complete item
 function! s:check_back_space() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~ '\s'
 endfunction
+
+" MarkdownPreview plugin, set port so we can forward it
+" use a custom port to start server or random for empty
+let g:mkdp_port = '1337'
+let g:mkdp_echo_preview_url = 1
 
 inoremap <silent><expr> <TAB>
       \ pumvisible() ? "\<C-n>" :
@@ -262,7 +278,7 @@ if has("gui_running")
 endif
 
 " Set utf8 as standard encoding and en_US as the standard language
-set encoding=utf8
+set encoding=utf-8
 
 " Use Unix as the standard file type
 set ffs=unix,dos,mac
@@ -408,6 +424,7 @@ autocmd BufWrite * :call DeleteTrailingWS()
 " autocmd Filetype gitcommit textwidth=72
 
 noremap <Leader>f :exe "normal! gg=G``zz"<CR>
+noremap <Leader>p :exe "Prettier"<CR>
 
 autocmd Syntax c,cpp,vim,xml,html,xhtml,perl,javascript,ruby,json normal zR
 
@@ -473,8 +490,9 @@ map <leader>pp :setlocal paste!<cr>
 
 
 " let me navigate errors via leader n/p
-map <leader>n <Plug>(qf_qf_next)
-map <leader>p <Plug>(qf_qf_previous)
+" map <leader>n <Plug>(qf_qf_next)
+" map <leader>p <Plug>(qf_qf_previous)
+" This doesnt work anymore lol
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Helper functions

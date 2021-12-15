@@ -11,6 +11,10 @@ set convert-meta off
 set output-meta on
 set editing-mode vi
 
+set colored-stats On
+set completion-prefix-display-length 3
+
+
 # for linux console and RH/Debian xterm
 "\e[1~": beginning-of-line
 "\e[4~": end-of-line

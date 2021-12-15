@@ -86,7 +86,7 @@ then
 fi
 
 set -o vi
-export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/local/go/bin:/usr/local/go/bin
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/local/go/bin:/usr/local/go/bin:~/.bin
 export GOPATH=$HOME/code/go
 export GOROOT='/usr/lib/go'
 export GOBIN=$GOPATH/bin
@@ -95,7 +95,7 @@ export PATH=$PATH:$GOROOT/bin:$GOBIN
 export PATH=$PATH:/mnt/c/Windows/System32
 export PATH=$PATH:./node_modules/.bin
 export PATH=$PATH:$HOME/.local/bin
-export EDITOR=vim
+export EDITOR=nvim
 bind -m vi-insert "\C-l":clear-screen
 
 export FZF_DEFAULT_COMMAND='ag --no-color --ignore node_modules -g ""'
@@ -119,6 +119,16 @@ platform=$(uname)
 # This should be above the other source files since we need this
 # to load the proper npm config key
 [ -f ~/.keys.bash ] && source ~/.keys.bash
+
+has_keychain=`which keychain >/dev/null; echo $?`
+if [[ "$has_keychain" -eq 0 ]]
+then
+    WORK_GPG_KEY=$(grep "signingkey" ~/work/.gitconfig | awk -F= '{print $2}')
+    CODE_GPG_KEY=$(grep "signingkey" ~/code/.gitconfig | awk -F= '{print $2}')
+    #eval `keychain --query --eval --nogui -Q --gpg2 --agents ssh,gpg id_rsa $WORK_GPG_KEY #$CODE_GPG_KEY`
+    echo "keychain --eval --nogui -Q --gpg2 --agents ssh,gpg id_rsa $WORK_GPG_KEY #$CODE_GPG_KEY"
+    eval `keychain --eval --nogui -Q --gpg2 --agents ssh,gpg id_rsa $WORK_GPG_KEY #$CODE_GPG_KEY`
+fi
 
 if [[ "$platform" != "Linux" ]]
 then

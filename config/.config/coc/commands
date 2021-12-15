@@ -1,2 +1,4 @@
+document.renameCurrentWord
+tsserver.goToProjectConfig
 editor.action.organizeImport
 tsserver.reloadProjects
