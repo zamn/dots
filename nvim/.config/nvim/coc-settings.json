@@ -11,6 +11,6 @@
     },
     "git.enableGutters": false,
     "tsserver.log": "verbose",
-    "tsserver.npm":"/usr/sbin/npm"
-    "coc.preferences.enableFloatHighlight": true,
+    "tsserver.npm":"/usr/sbin/npm",
+    "coc.preferences.enableFloatHighlight": true
 }

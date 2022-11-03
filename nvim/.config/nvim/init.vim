@@ -26,7 +26,9 @@ Plug 'fatih/vim-go'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " This should be after coc.nvim since that sets up yarn for us
-Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
+" Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
+" Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+Plug 'iamcco/markdown-preview.nvim', { 'do': ':call mkdp#util#install()', 'for': 'markdown' }
 
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
@@ -92,6 +94,21 @@ set statusline+=%{NearestMethodOrFunction()}
 
 set statusline^=%{coc#status()}
 
+" Fix clipboard over ssh 4gud
+let g:clipboard = {
+   \   'name': 'ssh clipboard',
+   \   'copy': {
+   \      '+': ['xclip', '-select', 'clipboard'],
+   \      '*': ['xclip', '-select', 'clipboard'],
+   \    },
+   \   'paste': {
+   \      '+': ['xclip', '-select', 'clipboard', '-o'],
+   \      '*': ['xclip', '-select', 'clipboard', '-o'],
+   \   },
+   \   'cache_enabled': 1,
+   \ }
+
+
 " Add `%{StatusDiagnostic()}` to your 'statusline' option.
 function! StatusDiagnostic() abort
     let info = get(b:, 'coc_diagnostic_info', {})
@@ -129,12 +146,20 @@ endfunction
 let g:mkdp_port = '1337'
 let g:mkdp_echo_preview_url = 1
 
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
+" Old COC
+"inoremap <silent><expr> <TAB>
+"      \ pumvisible() ? "\<C-n>" :
+"      \ <SID>check_back_space() ? "\<TAB>" :
+"      \ coc#refresh()
 
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+" inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+inoremap <silent><expr> <TAB>
+            \ coc#pum#visible() ? coc#pum#next(1):
+            \ CheckBackSpace() ? "\<Tab>" :
+            \ coc#refresh()
+inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
+inoremap <expr> <cr> coc#pum#visible() ? coc#_select_confirm() : "\<CR>"
 
 nnoremap <c-p> :Files<cr>
 
@@ -395,6 +420,9 @@ autocmd BufReadPost *
 
 " Remember info about open buffers on close
 set viminfo^=%
+
+" psql editing
+au BufRead /tmp/psql.edit.* set syntax=sql
 
 """"""""""""""""""""""""""""""
 " => Status line
