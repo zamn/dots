@@ -46,3 +46,5 @@
   autosetuprebase = local
 [rerere]
   enabled = true
+[credential]
+  helper = store

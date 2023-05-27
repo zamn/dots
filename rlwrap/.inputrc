@@ -2,6 +2,8 @@
 # do not bell on tab-completion
 set bell-style none
 
+set enable-bracketed-paste on
+
 set colored-stats On
 set completion-prefix-display-length 3
 
@@ -10,6 +12,7 @@ set input-meta on
 set convert-meta off
 set output-meta on
 set editing-mode vi
+set keymap vi-command
 
 set colored-stats On
 set completion-prefix-display-length 3
@@ -36,3 +39,5 @@ set completion-prefix-display-length 3
 # for non RH/Debian xterm, can't hurt for RH/DEbian xterm
 "\eOH": beginning-of-line
 "\eOF": end-of-line
+
+"^[q": "^[b\'^[f\'"]]"]"

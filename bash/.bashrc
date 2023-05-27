@@ -15,6 +15,9 @@ HISTCONTROL=ignoreboth
 # append to the history file, don't overwrite it
 shopt -s histappend
 
+# append to history after every command typed
+PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
+
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
 HISTSIZE=1000
 HISTFILESIZE=2000
@@ -68,8 +71,6 @@ alias node='env NODE_NO_READLINE=1 rlwrap node'
 alias nodejs=node
 export MOSH_ESCAPE_KEY=~
 alias prettyxml='xmllint --format -'
-
-alias psql='rlwrap psql'
 
 # Use neovim for all teh things.. for now
 alias vim=nvim

@@ -5,6 +5,17 @@ have() {
 
 export -f have
 
+rlpsql() {
+    rlwrap --always-readline -N psql "$@"
+    return
+}
+export -f rlpsql
+
+# Needed to have gitlab creds persisted
+export PERLLIB=/Library/Developer/CommandLineTools/usr/share/git-core/perl:$PERLLIB
+
+alias firefox="open -a /Applications/Firefox.app"
+
 if [[ -f ~/.homebrew.bash ]]
 then
     source ~/.homebrew.bash
@@ -24,7 +35,8 @@ alias kitty='/Applications/kitty.app/Contents/MacOS/kitty'
 export NVM_DIR="$HOME/.nvm"
 
 [ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
-[ -s "/usr/local/opt/nvm/etc/bash_completion" ] && . "/usr/local/opt/nvm/etc/bash_completion"  # This loads nvm bash_completion
+  [ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && . "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+export NVM_DIR="$HOME/.nvm"
 
 export GPG_TTY=$(tty)
 
@@ -41,3 +53,9 @@ if [[ -n "$TMUX" ]]
 then
     export DISPLAY="$(tmux show-env | sed -n 's/^DISPLAY=//p')"
 fi
+
+export PATH="/usr/local/opt/libpq/bin:$PATH"
+
+alias ls="ls -GF"
+
+alias fix_keychain="security -v unlock-keychain ~/Library/Keychains/login.keychain-db"
