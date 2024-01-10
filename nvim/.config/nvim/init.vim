@@ -52,7 +52,12 @@ Plug 'raimondi/delimitmate'
 
 Plug 'tpope/vim-commentary'
 
+Plug 'lukas-reineke/indent-blankline.nvim'
+
 Plug 'romainl/vim-qf'
+
+" Matching blocks
+" Plug 'tmhedberg/matchit'
 
 " go into file = gf, <c-w>gf (new tab), <c-w>f (new split)
 
@@ -70,9 +75,11 @@ Plug 'tpope/vim-rhubarb'
 Plug 'shumphrey/fugitive-gitlab.vim'
 Plug 'gregsexton/gitv', {'on': ['Gitv']}
 
+Plug 'hashivim/vim-terraform'
+
 Plug 'prettier/vim-prettier', {
-  \ 'do': 'yarn install',
-  \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html'] }
+  \ 'do': 'npm install --frozen-lockfile --production',
+  \ 'for': ['javascript', 'typescriptreact', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html'] }
 
 call plug#end()
 
@@ -93,6 +100,20 @@ let g:airline#extensions#coc#enabled = 1
 set statusline+=%{NearestMethodOrFunction()}
 
 set statusline^=%{coc#status()}
+
+function! HasPlug(name) abort
+  return has_key(g:plugs, a:name)
+endfunction
+
+if HasPlug('indent-blankline.nvim')
+    autocmd VimEnter * call Setup_ibl()
+endif
+
+function! Setup_ibl() abort
+lua<<EOF
+require("ibl").setup()
+EOF
+endfunction
 
 " Fix clipboard over ssh 4gud
 let g:clipboard = {
@@ -146,17 +167,20 @@ endfunction
 let g:mkdp_port = '1337'
 let g:mkdp_echo_preview_url = 1
 
-" Old COC
-"inoremap <silent><expr> <TAB>
-"      \ pumvisible() ? "\<C-n>" :
-"      \ <SID>check_back_space() ? "\<TAB>" :
-"      \ coc#refresh()
+function! CheckBackspace() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
 
-" inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
+" Use tab for trigger completion with characters ahead and navigate
+" NOTE: There's always complete item selected by default, you may want to enable
+" no select by `"suggest.noselect": true` in your configuration file
+" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+" other plugin before putting this into your config
 inoremap <silent><expr> <TAB>
             \ coc#pum#visible() ? coc#pum#next(1):
-            \ CheckBackSpace() ? "\<Tab>" :
+            \ CheckBackspace() ? "\<Tab>" :
             \ coc#refresh()
 inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
 inoremap <expr> <cr> coc#pum#visible() ? coc#_select_confirm() : "\<CR>"
@@ -451,7 +475,8 @@ autocmd BufWrite * :call DeleteTrailingWS()
 " Git commit auto wrap
 " autocmd Filetype gitcommit textwidth=72
 
-noremap <Leader>f :exe "normal! gg=G``zz"<CR>
+autocmd Filetype python noremap <Leader>p :call CocAction('runCommand', 'editor.action.formatDocument')<CR>
+
 noremap <Leader>p :exe "Prettier"<CR>
 
 autocmd Syntax c,cpp,vim,xml,html,xhtml,perl,javascript,ruby,json normal zR
