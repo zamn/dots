@@ -34,9 +34,9 @@ alias kitty='/Applications/kitty.app/Contents/MacOS/kitty'
 
 export NVM_DIR="$HOME/.nvm"
 
-[ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
-  [ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && . "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 export NVM_DIR="$HOME/.nvm"
+  [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && . "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+  [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && . "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 
 export GPG_TTY=$(tty)
 
@@ -59,3 +59,4 @@ export PATH="/usr/local/opt/libpq/bin:$PATH"
 alias ls="ls -GF"
 
 alias fix_keychain="security -v unlock-keychain ~/Library/Keychains/login.keychain-db"
+eval "$(/opt/homebrew/bin/brew shellenv)"

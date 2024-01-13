@@ -390,6 +390,8 @@ nmap <leader>ttd <Plug>(coc-type-definition)
 nmap <leader>ti <Plug>(coc-implementation)
 nmap <leader>tr <Plug>(coc-references)
 
+nmap <leader>p :CocCommand prettier.formatFile<CR>
+
 nmap <leader>ec :call EditCompiledVersion()<CR>
 
 nmap <leader>mt :execute "Dispatch ./node_modules/.bin/mocha --require source-map-support/register --recursive --exit " . GetCompiledVersion()<CR>
@@ -543,9 +545,6 @@ map <leader>pp :setlocal paste!<cr>
 
 
 " let me navigate errors via leader n/p
-" map <leader>n <Plug>(qf_qf_next)
-" map <leader>p <Plug>(qf_qf_previous)
-" This doesnt work anymore lol
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Helper functions

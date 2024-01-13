@@ -1,4 +1,5 @@
 document.renameCurrentWord
 tsserver.goToProjectConfig
+prettier.formatFile
 editor.action.organizeImport
 tsserver.reloadProjects

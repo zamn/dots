@@ -55,32 +55,6 @@ frbr() {
     fi
 }
 
-_openGitBlame="$_gitLogLineToHash | xargs -I % sh -c 'xdg-open \"$(git remote get-url origin | sed 's/\.git$//g' | sed 's/:/\//g' | sed 's/git\@/https\:\/\//g')/commit/%\"'"
-
-fblame() {
-    f=$1
-    shift
-    csha=""
-    { git log --color=always --pretty=format:%H -- "$f"; echo; } | {
-        while read hash; do
-            res=$(git blame --color-by-age -L"/$1/",+1 $hash -- "$f" 2>/dev/null | sed 's/^//')
-            # my attempt to color.. TODO
-            #res=$(git --no-pager blame -L"/$1/",+1 $hash -- $f | awk '{print $1}' | xargs git --no-pager log -1 --pretty=format:"%C(auto)%h%d %s %C(black)%C(bold)%cr% C(auto)%an" --date=relative)
-            sha=${res%% (*}
-            if [[ "${res}" != "" && "${csha}" != "${sha}" ]]; then
-                #echo "${hash}" # i dont actually need this - looks like it just points to parent commit
-                echo "${res}"
-                csha="${sha}"
-            fi
-        done
-    } | fzf --no-sort --no-multi \
-            --ansi --preview="$_viewGitLogLine" \
-                --header "enter to view, alt-y to copy hash" \
-                --bind "enter:execute:$_viewGitLogLine   | less -R" \
-                --bind "alt-y:execute:$_gitLogLineToHash | xclip -select clipboard" \
-                --bind "alt-o:execute:$_openGitBlame"
-}
-
 search() {
     if [[ -n "$QUERY" ]]
     then

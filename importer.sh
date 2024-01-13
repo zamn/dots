@@ -9,6 +9,8 @@ then
   exit 1
 fi
 
+. bash/.keys.bashrc
+
 if [[ -z "$PINEENTRY_PROGRAM" ]]
 then
     echo "You *MUST* set \$PINEENTRY_PROGRAM in .keys.bash (at the least) to get stuff working."
