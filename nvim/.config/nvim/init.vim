@@ -23,6 +23,8 @@ Plug 'bling/vim-airline'
 
 Plug 'fatih/vim-go'
 
+Plug 'lervag/vimtex'
+
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " This should be after coc.nvim since that sets up yarn for us
@@ -78,8 +80,8 @@ Plug 'gregsexton/gitv', {'on': ['Gitv']}
 Plug 'hashivim/vim-terraform'
 
 Plug 'prettier/vim-prettier', {
-  \ 'do': 'npm install --frozen-lockfile --production',
-  \ 'for': ['javascript', 'typescriptreact', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html'] }
+  \ 'do': 'yarn install --frozen-lockfile --production',
+  \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html'] }
 
 call plug#end()
 

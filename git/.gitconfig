@@ -2,6 +2,8 @@
   path = ~/work/.gitconfig
 [includeIf "gitdir:~/code/"]
   path = ~/code/.gitconfig
+[includeIf "gitdir:~/interviews/"]
+  path = ~/code/.gitconfig
 [color]
   ui = true
 [diff]

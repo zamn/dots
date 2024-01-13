@@ -1,0 +1,15 @@
+".*chrome.*"
+    None, Up, Button4, 8
+    None, Down, Button5, 8
+
+".*firefox.*"
+    None, Up, Button4, 8
+    None, Down, Button5, 8
+
+".*slack.*"
+    None, Up, Button4, 4
+    None, Down, Button5, 4
+
+".*mellowplayer.*"
+    None, Up, Button4, 4
+    None, Down, Button5, 4

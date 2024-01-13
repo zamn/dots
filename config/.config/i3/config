@@ -92,16 +92,16 @@ bindsym $mod+9 exec ~/.bin/switch-or-next.sh  9
 bindsym $mod+0 exec ~/.bin/switch-or-next.sh  10
 
 # move focused container to workspace
-bindsym $mod+Shift+exclam move container to workspace $ws1
-bindsym $mod+Shift+at move container to workspace $ws2
-bindsym $mod+Shift+numbersign move container to workspace $ws3
-bindsym $mod+Shift+dollar move container to workspace $ws4
-bindsym $mod+Shift+percent move container to workspace 5
-bindsym $mod+Shift+asciicircum move container to workspace $ws6
-bindsym $mod+Shift+ampersand move container to workspace 7
-bindsym $mod+Shift+asterisk move container to workspace 8
-bindsym $mod+Shift+parenleft move container to workspace 9
-bindsym $mod+Shift+parenright move container to workspace 10
+bindsym $mod+Shift+exclam exec ~/.bin/switch-or-previous.sh $ws1
+bindsym $mod+Shift+at exec ~/.bin/switch-or-previous.sh $ws2
+bindsym $mod+Shift+numbersign exec ~/.bin/switch-or-previous.sh $ws3
+bindsym $mod+Shift+dollar exec ~/.bin/switch-or-previous.sh $ws4
+bindsym $mod+Shift+percent exec ~/.bin/switch-or-previous.sh 5
+bindsym $mod+Shift+asciicircum exec ~/.bin/switch-or-previous.sh $ws6
+bindsym $mod+Shift+ampersand exec ~/.bin/switch-or-previous.sh 7
+bindsym $mod+Shift+asterisk exec ~/.bin/switch-or-previous.sh 8
+bindsym $mod+Shift+parenleft exec ~/.bin/switch-or-previous.sh 9
+bindsym $mod+Shift+parenright exec ~/.bin/switch-or-previous.sh 10
 
 # move current workspace between monitors
 bindsym $mod+Control+h move workspace to output left
