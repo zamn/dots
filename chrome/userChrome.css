@@ -1,0 +1,16 @@
+#TabsToolbar { visibility: collapse; }
+
+/* Minimize sidebar header to a light blue stripe (except Bookmarks, History, Sync'd Tabs); appears normally on hover */
+#sidebar-box:not([sidebarcommand="viewBookmarksSidebar"]):not([sidebarcommand="viewHistorySidebar"]):not([sidebarcommand="viewTabsSidebar"])
+  #sidebar-header:not(:hover) {
+    max-height: 5px !important;
+    min-height: 5px !important;
+    padding: 0 !important;
+    background-color: #323234 !important;
+    opacity: 1 !important;
+}
+#sidebar-box:not([sidebarcommand="viewBookmarksSidebar"]):not([sidebarcommand="viewHistorySidebar"]):not([sidebarcommand="viewTabsSidebar"])
+  #sidebar-header:not(:hover) #sidebar-switcher-target {
+    /* BAD NEWS: display: none !important; */
+    opacity: 0 !important;
+}

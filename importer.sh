@@ -11,16 +11,26 @@ fi
 
 . bash/.keys.bashrc
 
+if [[ $FIREFOX_PROFILE_DIR ]]
+then
+    echo "WARN: FIREFOX_PROFILE_DIR is not set, will not stow firefox styles"
+fi
+
 if [[ -z "$PINEENTRY_PROGRAM" ]]
 then
-    echo "You *MUST* set \$PINEENTRY_PROGRAM in .keys.bash (at the least) to get stuff working."
+    echo "ERROR: You must set \$PINEENTRY_PROGRAM in .keys.bash to configure gpg"
     exit 1234
 fi
 
 # stow all files in top level dirs
 for d in `ls -d */ | tr / ' '`
 do
-  stow -t $HOME $d
+  if [[ -n "$FIREFOX_PROFILE_DIR" ]]
+  then
+      stow -t $FIREFOX_PROFILE_DIR $d
+  else
+      stow -t $HOME $d
+  fi
   stowResult=$?
 done
 
