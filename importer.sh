@@ -11,7 +11,7 @@ fi
 
 . bash/.keys.bash
 
-if [[ $FIREFOX_PROFILE_DIR ]]
+if [[ -z $FIREFOX_PROFILE_DIR ]]
 then
     echo "WARN: FIREFOX_PROFILE_DIR is not set, will not stow firefox styles"
 fi
@@ -25,9 +25,12 @@ fi
 # stow all files in top level dirs
 for d in `ls -d */ | tr / ' '`
 do
-  if [[ -n "$FIREFOX_PROFILE_DIR" ]]
+  if [[ "$d" = "firefox" ]]
   then
-      stow -t $FIREFOX_PROFILE_DIR $d
+      if [[ -n "$FIREFOX_PROFILE_DIR" ]]
+      then
+          stow -t $FIREFOX_PROFILE_DIR $d
+      fi
   else
       stow -t $HOME $d
   fi
