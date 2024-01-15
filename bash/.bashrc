@@ -126,9 +126,8 @@ if [[ "$has_keychain" -eq 0 ]]
 then
     WORK_GPG_KEY=$(grep "signingkey" ~/work/.gitconfig | awk -F= '{print $2}')
     CODE_GPG_KEY=$(grep "signingkey" ~/code/.gitconfig | awk -F= '{print $2}')
-    #eval `keychain --query --eval --nogui -Q --gpg2 --agents ssh,gpg id_rsa $WORK_GPG_KEY #$CODE_GPG_KEY`
-    echo "keychain --eval --nogui -Q --gpg2 --agents ssh,gpg id_rsa $WORK_GPG_KEY #$CODE_GPG_KEY"
-    eval `keychain --eval --nogui -Q --gpg2 --agents ssh,gpg id_rsa $WORK_GPG_KEY #$CODE_GPG_KEY`
+    echo "keychain --eval --nogui -Q --gpg2 --agents ssh,gpg id_rsa $WORK_GPG_KEY $CODE_GPG_KEY"
+    eval `keychain --eval --nogui -Q --gpg2 --agents ssh,gpg id_rsa $WORK_GPG_KEY $CODE_GPG_KEY`
 fi
 
 if [[ "$platform" != "Linux" ]]
