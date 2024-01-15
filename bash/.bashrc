@@ -130,6 +130,7 @@ then
     eval `keychain --eval --nogui -Q --gpg2 --agents ssh,gpg id_rsa $WORK_GPG_KEY $CODE_GPG_KEY`
 fi
 
+platform=${platform:-$(uname -a | awk '{print $1}')}
 if [[ "$platform" != "Linux" ]]
 then
     [ -f ~/.mac.bash ] && source ~/.mac.bash

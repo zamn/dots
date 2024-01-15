@@ -9,7 +9,7 @@ then
   exit 1
 fi
 
-. bash/.keys.bashrc
+. bash/.keys.bash
 
 if [[ $FIREFOX_PROFILE_DIR ]]
 then
@@ -35,6 +35,7 @@ do
 done
 
 # TODO: Make this less hacky
+platform=${platform:-$(uname -a | awk '{print $1}')}
 if [[ "$platform" = "Linux" ]]
 then
     sed -i "s/\$\PINEENTRY_PROGRAM/$(eval echo $PINEENTRY_PROGRAM | sed 's/\//\\\//g')/g" gnupg/.gnupg/gpg-agent.conf
