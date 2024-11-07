@@ -11,15 +11,31 @@ rlpsql() {
 }
 export -f rlpsql
 
+copy() {
+    cmd="pbcopy"
+    if [[ -n "$TMUX" ]]
+    then
+        export DISPLAY="$(tmux show-env | sed -n 's/^DISPLAY=//p')"
+        cmd="xclip -select clipboard"
+    fi
+
+    if [ -n "$1" ]; then
+        input="$1"
+    else
+        read input
+    fi
+    echo -n "$input" | eval $cmd
+}
+
+export -f copy
+
 # Needed to have gitlab creds persisted
 export PERLLIB=/Library/Developer/CommandLineTools/usr/share/git-core/perl:$PERLLIB
 
 alias firefox="open -a /Applications/Firefox.app"
 
-if [[ -f ~/.homebrew.bash ]]
-then
-    source ~/.homebrew.bash
-fi
+# Set up homebrew
+eval "$(/opt/homebrew/bin/brew shellenv)"
 
 [[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && . "/usr/local/etc/profile.d/bash_completion.sh"
 
@@ -34,9 +50,8 @@ alias kitty='/Applications/kitty.app/Contents/MacOS/kitty'
 
 export NVM_DIR="$HOME/.nvm"
 
-export NVM_DIR="$HOME/.nvm"
-  [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && . "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
-  [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && . "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 
 export GPG_TTY=$(tty)
 

@@ -44,6 +44,14 @@ Plug 'jparise/vim-graphql'
 
 Plug 'moll/vim-node'
 
+" FIGURE OUT
+" Plug 'zbirenbaum/copilot.lua'
+" Plug 'nvim-lua/plenary.nvim'
+" Plug 'CopilotC-Nvim/CopilotChat.nvim', { 'branch': 'canary' }
+
+
+" Plug 'github/copilot.vim'
+
 Plug 'HerringtonDarkholme/yats.vim'
 
 Plug 'scrooloose/nerdtree'
@@ -79,11 +87,19 @@ Plug 'gregsexton/gitv', {'on': ['Gitv']}
 
 Plug 'hashivim/vim-terraform'
 
-Plug 'prettier/vim-prettier', {
-  \ 'do': 'yarn install --frozen-lockfile --production',
-  \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html'] }
+"Plug 'prettier/vim-prettier', {
+"  \ 'do': 'npm install --frozen-lockfile --production',
+"  \ 'for': ['javascript', 'typescriptreact', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html'] }
 
 call plug#end()
+
+" Reverting to old vim colorscheme
+colorscheme vim
+lua<<EOF
+vim.o.termguicolors = false
+vim.api.nvim_set_hl(0, 'FloatBorder', { link = 'WinSeparator' })
+vim.api.nvim_set_hl(0, 'NormalFloat', { link = 'Pmenu' })
+EOF
 
 if !empty(glob('$HOME/.config/nvim/gitlab.vim'))
   source $HOME/.config/nvim/gitlab.vim
@@ -118,6 +134,8 @@ EOF
 endfunction
 
 " Fix clipboard over ssh 4gud
+" TODO: This breaks if display is bork
+"
 let g:clipboard = {
    \   'name': 'ssh clipboard',
    \   'copy': {
@@ -188,6 +206,9 @@ inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
 inoremap <expr> <cr> coc#pum#visible() ? coc#_select_confirm() : "\<CR>"
 
 nnoremap <c-p> :Files<cr>
+
+" Auto-create parent directories (except for URIs ://).
+au BufWritePre,FileWritePre * if @% !~# '\(://\)' | call mkdir(expand('<afile>:p:h'), 'p') | endif
 
 " Zoom / Restore window.
 function! s:ZoomToggle() abort
@@ -480,6 +501,8 @@ autocmd BufWrite * :call DeleteTrailingWS()
 " autocmd Filetype gitcommit textwidth=72
 
 autocmd Filetype python noremap <Leader>p :call CocAction('runCommand', 'editor.action.formatDocument')<CR>
+
+command! -nargs=0 Prettier :CocCommand prettier.forceFormatDocument
 
 noremap <Leader>p :exe "Prettier"<CR>
 

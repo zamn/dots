@@ -60,6 +60,8 @@ if [ -x /usr/bin/dircolors ]; then
   alias egrep='egrep --color=auto'
 fi
 
+alias grep='grep --color=always'
+
 # some more ls aliases
 alias ll='ls -alF'
 alias la='ls -A'
@@ -99,27 +101,22 @@ export PATH=$PATH:$HOME/.local/bin
 export EDITOR=nvim
 bind -m vi-insert "\C-l":clear-screen
 
-export FZF_DEFAULT_COMMAND='ag --no-color --ignore node_modules -g ""'
-
-function sshtmux() {
-    PROMPT_COMMAND='echo -en "\033]0;devbox\a"'
-    echo "$1"
-    if [[ "$1" = "mac" ]]
-    then
-        tmux_command="/usr/local/bin/tmux"
-    else
-        tmux_command="tmux"
-    fi
-    ssh $1 -t "$tmux_command" new -A -s dev
-}
-
-export sshtmux
+export FZF_DEFAULT_COMMAND='ag --no-color --hidden --ignore .git -g ""'
 
 platform=$(uname)
 
 # This should be above the other source files since we need this
 # to load the proper npm config key
 [ -f ~/.keys.bash ] && source ~/.keys.bash
+
+export NVM_DIR="$HOME/.nvm"
+
+if [[ "$platform" != "Linux" ]]
+then
+    [ -f ~/.mac.bash ] && source ~/.mac.bash
+else
+    [ -f ~/.linux.bash ] && source ~/.linux.bash
+fi
 
 has_keychain=`which keychain >/dev/null; echo $?`
 if [[ "$has_keychain" -eq 0 ]]
@@ -142,3 +139,8 @@ fi
 [ -f ~/.helpers.bash ] && source ~/.helpers.bash
 
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+
+[[ -r "/opt/homebrew/etc/profile.d/bash_completion.sh" ]] && . "/opt/homebrew/etc/profile.d/bash_completion.sh"
+
+# autoload -U +X bashcompinit && bashcompinit
+# complete -o nospace -C /opt/homebrew/bin/terraform terraform
