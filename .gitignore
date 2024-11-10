@@ -9,3 +9,4 @@ git/code/.gitconfig
 config/.config/coc/mru
 .DS_Store
 gnupg
+coc
