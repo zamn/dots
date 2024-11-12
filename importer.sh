@@ -1,8 +1,6 @@
 #/bin/bash
 
 . bash/.keys.bash
-# create work dir, dont link it - only the files inside
-mkdir -p work/
 hasStow=`PATH=$PATH:. command -v stow >/dev/null; echo $?`
 
 # This hack will live 4ever
