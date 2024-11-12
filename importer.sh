@@ -31,7 +31,7 @@ do
   then
       if [[ -n "$FIREFOX_PROFILE_DIR" ]]
       then
-          stow -t $FIREFOX_PROFILE_DIR $d
+          stow -t "$FIREFOX_PROFILE_DIR" $d
       fi
   else
       stow -t $HOME $d
