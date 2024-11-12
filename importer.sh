@@ -14,6 +14,7 @@ then
   if [[ "$platform" != "Linux" ]]
   then
     echo "Installing brew packages.."
+    # generate via $(brew leaves > brew_packages.txt)
     xargs brew install < brew_packages.txt
   else
     exit 1
