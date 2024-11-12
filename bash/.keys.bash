@@ -4,3 +4,4 @@ export NPM_CONFIG_TOKEN=''
 export GITLAB_API_PAT=''
 export PAGER=less
 export VPN=''
+export FIREFOX_PROFILE_DIR=''
