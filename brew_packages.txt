@@ -1,0 +1,17 @@
+coreutils
+diff-so-fancy
+findutils
+gawk
+git
+gnu-getopt
+gnu-indent
+gnu-sed
+gnu-tar
+gnupg
+grep
+neovim
+nvm
+rlwrap
+stow
+tmux
+utf8proc
