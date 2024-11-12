@@ -7,3 +7,5 @@ config/.config/coc/memos.json
 config/.config/coc/extensions
 git/code/.gitconfig
 config/.config/coc/mru
+.DS_Store
+gnupg
