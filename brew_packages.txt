@@ -9,6 +9,7 @@ gnu-sed
 gnu-tar
 gnupg
 grep
+keychain
 neovim
 nvm
 rlwrap

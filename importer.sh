@@ -5,10 +5,19 @@
 mkdir -p work/
 hasStow=`PATH=$PATH:. command -v stow >/dev/null; echo $?`
 
+# This hack will live 4ever
+platform=${platform:-$(uname -a | awk '{print $1}')}
+
 if [[ $hasStow -ne 0 ]]
 then
   echo "Please install GNU stow through your package manager."
-  exit 1
+  if [[ "$platform" != "Linux" ]]
+  then
+    echo "Installing brew packages.."
+    xargs brew install < brew_packages.txt
+  else
+    exit 1
+  fi
 fi
 
 . bash/.keys.bash
@@ -39,8 +48,6 @@ do
   stowResult=$?
 done
 
-# TODO: Make this less hacky
-platform=${platform:-$(uname -a | awk '{print $1}')}
 if [[ "$platform" = "Linux" ]]
 then
     sed -i "s/\$\PINEENTRY_PROGRAM/$(eval echo $PINEENTRY_PROGRAM | sed 's/\//\\\//g')/g" gnupg/.gnupg/gpg-agent.conf
