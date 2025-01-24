@@ -27,6 +27,11 @@ Plug 'lervag/vimtex'
 
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
+"DB Viewer
+Plug 'tpope/vim-dadbod'
+Plug 'kristijanhusak/vim-dadbod-ui'
+Plug 'kristijanhusak/vim-dadbod-completion' "Optional
+
 " This should be after coc.nvim since that sets up yarn for us
 " Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
 " Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
@@ -43,6 +48,8 @@ Plug 'othree/yajs.vim'
 Plug 'jparise/vim-graphql'
 
 Plug 'moll/vim-node'
+
+Plug 'prisma/vim-prisma'
 
 " FIGURE OUT
 " Plug 'zbirenbaum/copilot.lua'
@@ -95,6 +102,7 @@ call plug#end()
 
 " Reverting to old vim colorscheme
 colorscheme vim
+
 lua<<EOF
 vim.o.termguicolors = false
 vim.api.nvim_set_hl(0, 'FloatBorder', { link = 'WinSeparator' })
@@ -117,7 +125,7 @@ let g:airline#extensions#coc#enabled = 1
 
 set statusline+=%{NearestMethodOrFunction()}
 
-set statusline^=%{coc#status()}
+"set statusline^=%{coc#status()}
 
 function! HasPlug(name) abort
   return has_key(g:plugs, a:name)
@@ -136,11 +144,12 @@ endfunction
 " Fix clipboard over ssh 4gud
 " TODO: This breaks if display is bork
 "
+let $SSH_CONNECTION = system('echo $SSH_CONNECTION')
 let g:clipboard = {
    \   'name': 'ssh clipboard',
    \   'copy': {
-   \      '+': ['xclip', '-select', 'clipboard'],
-   \      '*': ['xclip', '-select', 'clipboard'],
+   \      '+': ['bash', 'copy-over-ssh.sh'],
+   \      '*': ['bash', 'copy-over-ssh.sh'],
    \    },
    \   'paste': {
    \      '+': ['xclip', '-select', 'clipboard', '-o'],
@@ -504,7 +513,7 @@ autocmd Filetype python noremap <Leader>p :call CocAction('runCommand', 'editor.
 
 command! -nargs=0 Prettier :CocCommand prettier.forceFormatDocument
 
-noremap <Leader>p :exe "Prettier"<CR>
+" noremap <Leader>p :exe "Prettier"<CR>
 
 autocmd Syntax c,cpp,vim,xml,html,xhtml,perl,javascript,ruby,json normal zR
 
