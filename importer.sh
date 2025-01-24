@@ -6,6 +6,9 @@ hasStow=`PATH=$PATH:. command -v stow >/dev/null; echo $?`
 # This hack will live 4ever
 platform=${platform:-$(uname -a | awk '{print $1}')}
 
+# create psql config folder to store history
+mkdir -p ~/.config/psql/
+
 if [[ $hasStow -ne 0 ]]
 then
   echo "Please install GNU stow through your package manager."

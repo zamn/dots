@@ -1,0 +1,31 @@
+-- hide all these commands
+\set QUIET 1
+
+-- make sql output not painful
+\x auto
+
+-- show sql timing (for sanity)
+\timing
+
+-- display stuff using unicode (cus its nice)
+\pset linestyle unicode
+
+-- set up sql command history storage
+\set HISTCONTROL ignoredups
+\set HISTFILE ~/.config/psql/psql_history-:DBNAME@:HOST
+\set HISTSIZE 50000
+
+-- autocomplete to uppercase cus cool
+\set COMP_KEYWORD_CASE upper
+
+-- prompt cuteness
+\set PROMPT1 '(%n@%M:%>) [%/] > '
+\set PROMPT2 ''
+
+\pset null 'null'
+
+-- show SQL run by psql slash commands (useful if trying to do advanced stuff but mostly noisy)
+-- \set ECHO_HIDDEN on
+
+-- unhide all commands going forward
+\set QUIET 0
