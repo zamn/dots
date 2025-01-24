@@ -56,27 +56,29 @@ frbr() {
 }
 
 search() {
-    if [[ -n "$QUERY" ]]
-    then
-        pager="fzf -q $QUERY --print-query --ansi --exit-0 --delimiter=: --preview-window=up:70% --preview 'bat --color=always --line-range {2}: {1}'"
-    else
-        pager="fzf --print-query --ansi --exit-0 --delimiter=: --preview-window=up:70% --preview 'bat --color=always --line-range {2}: {1}'"
-    fi
-    words=$@
-    search_file=`ag --hidden --ignore-dir .git --column --color --color-line-number "49;32" --color-match "1;49;91" --color-path "49;95" --pager="$pager" --no-break --no-heading -Q "$words"`
-    query=$(echo "$search_file" | head -1)
-    search_result=$(echo "$search_file" | tail -1)
-    if [[ ! -z "$search_file" ]]
-    then
-        line=`echo $search_result | awk '{print $1}'`
-        line_number=`echo $search_result | awk -F: '{print $2}'`
-        match_column=`echo $search_result | awk -F: '{print $3}'`
-        file_name=`echo $search_result | awk -F: '{print $1}'`
+    # TODO: Highlight line/word from search, re-open search after exiting vim
+    rg --color=always --line-number --no-heading --smart-case "${*:-}" | fzf --ansi \
+      --color "hl:-1:underline,hl+:-1:underline:reverse" \
+      --delimiter : \
+      --preview 'bat --color=always {1} --highlight-line {2}' \
+      --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
+      --bind 'enter:become(nvim {1} +{2})'
 
-        nvim -c "/$words" "+call cursor($line_number, $match_column)" "$file_name" \
-            && QUERY="$query" search $words
-    fi
+    # query=$(echo "$search_file" | head -1)
+    # search_result=$(echo "$search_file" | tail -1)
+    # if [[ ! -z "$search_file" ]]
+    # then
+    #     line=`echo $search_result | awk '{print $1}'`
+    #     line_number=`echo $search_result | awk -F: '{print $2}'`
+    #     match_column=`echo $search_result | awk -F: '{print $3}'`
+    #     file_name=`echo $search_result | awk -F: '{print $1}'`
+
+    #     nvim -c "/$words" "+call cursor($line_number, $match_column)" "$file_name" \
+    #         && QUERY="$query" search $words
+    # fi
 }
+
+alias browse='fzf --preview="bat -f {}"'
 
 wsearch() {
     words=$@

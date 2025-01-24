@@ -11,24 +11,6 @@ rlpsql() {
 }
 export -f rlpsql
 
-copy() {
-    cmd="pbcopy"
-    if [[ -n "$TMUX" ]]
-    then
-        export DISPLAY="$(tmux show-env | sed -n 's/^DISPLAY=//p')"
-        cmd="xclip -select clipboard"
-    fi
-
-    if [ -n "$1" ]; then
-        input="$1"
-    else
-        read input
-    fi
-    echo -n "$input" | eval $cmd
-}
-
-export -f copy
-
 # Needed to have gitlab creds persisted
 export PERLLIB=/Library/Developer/CommandLineTools/usr/share/git-core/perl:$PERLLIB
 

@@ -101,7 +101,8 @@ export PATH=$PATH:$HOME/.local/bin
 export EDITOR=nvim
 bind -m vi-insert "\C-l":clear-screen
 
-export FZF_DEFAULT_COMMAND='ag --no-color --hidden --ignore .git -g ""'
+export RIPGREP_CONFIG_PATH=~/.config/ripgrep/.ripgreprc
+export FZF_DEFAULT_COMMAND='rg -l ""'
 
 platform=$(uname)
 
@@ -150,3 +151,5 @@ export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 
 # autoload -U +X bashcompinit && bashcompinit
 # complete -o nospace -C /opt/homebrew/bin/terraform terraform
+
+export SSH_CONNECTION
