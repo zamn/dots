@@ -5,3 +5,5 @@ debug/
 *.tar
 /sql/
 .nvimrc
+# Why would you ever commit this lewl
+.git/
