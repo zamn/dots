@@ -57,3 +57,4 @@ alias ls="ls -GF"
 
 alias fix_keychain="security -v unlock-keychain ~/Library/Keychains/login.keychain-db"
 eval "$(/opt/homebrew/bin/brew shellenv)"
+export PSQL_PAGER="pspg -X -I --menu-always --no-last-row-search --no-scrollbar --no-sound --vertical-cursor"

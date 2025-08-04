@@ -4,6 +4,10 @@
 -- make sql output not painful
 \x auto
 
+-- experiment formatting
+\pset format wrapped
+
+
 -- show sql timing (for sanity)
 \timing
 

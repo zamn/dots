@@ -1,6 +1,52 @@
 local LazyVim = require("lazyvim.util")
 
+vim.diagnostic.config({
+	virtual_text = false,
+	severity_sort = true,
+	float = {
+		border = "rounded",
+		source = "always",
+	},
+})
+
 return {
+	{
+		"folke/trouble.nvim",
+		opts = {}, -- for default options, refer to the configuration section for custom setup.
+		cmd = "Trouble",
+		keys = {
+			{
+				"<leader>xx",
+				"<cmd>Trouble diagnostics toggle<cr>",
+				desc = "Diagnostics (Trouble)",
+			},
+			{
+				"<leader>xX",
+				"<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
+				desc = "Buffer Diagnostics (Trouble)",
+			},
+			{
+				"<leader>cs",
+				"<cmd>Trouble symbols toggle focus=false<cr>",
+				desc = "Symbols (Trouble)",
+			},
+			{
+				"<leader>cl",
+				"<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
+				desc = "LSP Definitions / references / ... (Trouble)",
+			},
+			{
+				"<leader>xL",
+				"<cmd>Trouble loclist toggle<cr>",
+				desc = "Location List (Trouble)",
+			},
+			{
+				"<leader>xQ",
+				"<cmd>Trouble qflist toggle<cr>",
+				desc = "Quickfix List (Trouble)",
+			},
+		},
+	},
 	{
 		"stevearc/conform.nvim",
 		config = function(_, opts)
@@ -13,6 +59,7 @@ return {
 			})
 		end,
 	},
+	-- cmp
 	{
 		"hrsh7th/nvim-cmp",
 		priority = 1000,
@@ -33,9 +80,8 @@ return {
 						cmp.TriggerEvent.InsertEnter,
 					},
 				},
-				performance = {
-					max_view_entries = 20,
-					debounce = 150,
+				window = {
+					documentation = cmp.config.window.bordered(),
 				},
 				snippet = {
 					expand = function(args)
@@ -43,9 +89,9 @@ return {
 					end,
 				},
 				sources = cmp.config.sources({
-					{ name = "nvim_lsp" },
-					{ name = "luasnip" },
-					{ name = "nvim_lsp_signature_help" },
+					{ name = "nvim_lsp", keyword_length = 1 },
+					{ name = "luasnip", keyword_length = 2 },
+					{ name = "nvim_lsp_signature_help", keyword_length = 3 },
 					{ name = "path" },
 					{ name = "crates" },
 					{
@@ -113,8 +159,15 @@ return {
 			{
 				"williamboman/mason-lspconfig.nvim",
 				opts = {
-					ensure_installed = { "typescript", "lua_ls" },
-					automatic_installation = true,
+					setup = {
+						ensure_installed = {
+							"vtsls",
+							"lua_ls",
+							-- you can turn off/on auto_update per tool
+							{ "bash-language-server", auto_update = true },
+						},
+						automatic_installation = true,
+					},
 				},
 			},
 		},
@@ -203,6 +256,19 @@ return {
 									paramName = "Disable",
 									semicolon = "Disable",
 									arrayIndex = "Disable",
+								},
+							},
+						},
+					},
+					vtsls = {
+						settings = {
+							typescript = {
+								tsserver = {
+									maxTsServerMemory = 16184,
+								},
+								preferences = {
+									importModuleSpecifier = "non-relative",
+									log = "verbose",
 								},
 							},
 						},

@@ -1,5 +1,15 @@
 return {
 	{
+		"folke/tokyonight.nvim",
+		lazy = false,
+		priority = 2000,
+		opts = { style = "night" },
+		config = function()
+			vim.cmd.colorscheme("tokyonight")
+			vim.cmd("colorscheme tokyonight")
+		end,
+	},
+	{
 		"lukas-reineke/indent-blankline.nvim",
 		main = "ibl",
 		---@module "ibl"

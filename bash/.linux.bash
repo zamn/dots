@@ -9,3 +9,6 @@ export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 
 # Probably should go in login shell, but yolo
 xmodmap ~/.Xmodmap
+
+# TODO make this linux only
+alias ssh="kitten ssh"

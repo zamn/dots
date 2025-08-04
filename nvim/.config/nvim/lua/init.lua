@@ -14,30 +14,41 @@ vim.opt.relativenumber = true
 require("config.lazy")
 
 -- Reverting to old vim colorscheme
-vim.cmd("colorscheme vim")
+-- vim.cmd("colorscheme vim")
+-- vim.cmd("colorscheme tokyonight-night")
+vim.opt.background = "dark"
+vim.g.colors_name = "tokyonight-storm"
 
-vim.o.termguicolors = false
-vim.api.nvim_set_hl(0, "FloatBorder", { link = "WinSeparator" })
-vim.api.nvim_set_hl(0, "NormalFloat", { link = "Pmenu" })
+-- vim.o.termguicolors = false
+-- vim.api.nvim_set_hl(0, "FloatBorder", { link = "WinSeparator" })
+-- vim.api.nvim_set_hl(0, "NormalFloat", { link = "Pmenu" })
 
 -- TODO: Fix clipboard over ssh 4gud
-vim.g.clipboard = {
-	name = "ssh clipboard",
-	copy = {
-		["+"] = { "bash", "copy-over-ssh.sh" },
-		["*"] = { "bash", "copy-over-ssh.sh" },
-	},
-	paste = {
-		["+"] = { "xclip", "-select", "clipboard", "-o" },
-		["*"] = { "xclip", "-select", "clipboard", "-o" },
-	},
-	cache_enabled = 1,
-}
+-- vim.g.clipboard = {
+-- 	name = "ssh clipboard",
+-- 	copy = {
+-- 		["+"] = { "bash", "copy-over-ssh.sh" },
+-- 		["*"] = { "bash", "copy-over-ssh.sh" },
+-- 	},
+-- 	paste = {
+-- 		["+"] = { "xclip", "-select", "clipboard", "-o" },
+-- 		["*"] = { "xclip", "-select", "clipboard", "-o" },
+-- 	},
+-- 	cache_enabled = 1,
+-- }
 
--- CTRL-W < Decrease current window width by N (default 1).
--- CTRL-W > Increase current window width by N (default 1).
-vim.g.NERDTreeWinSize = 35
-vim.keymap.set("n", "<F2>", ":NERDTreeToggle<CR>")
+-- copy/paste over ssh using kitty
+-- vim.g.clipboard = {
+-- 	name = "OSC 52",
+-- 	copy = {
+-- 		["+"] = require("vim.ui.clipboard.osc52").copy("+"),
+-- 		["*"] = require("vim.ui.clipboard.osc52").copy("*"),
+-- 	},
+-- 	paste = {
+-- 		["+"] = require("vim.ui.clipboard.osc52").paste("+"),
+-- 		["*"] = require("vim.ui.clipboard.osc52").paste("*"),
+-- 	},
+-- }
 
 -- Airline configurations
 vim.g["airline#extensions#tabline#formatter"] = "unique_tail"

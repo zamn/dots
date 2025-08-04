@@ -46,7 +46,7 @@ export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quo
 # disable vim ctrl+s freeze terminal
 stty -ixon
 
-export TERM=screen-256color
+export TERM=xterm-kitty
 
 PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
 
@@ -102,7 +102,9 @@ export EDITOR=nvim
 bind -m vi-insert "\C-l":clear-screen
 
 export RIPGREP_CONFIG_PATH=~/.config/ripgrep/.ripgreprc
-export FZF_DEFAULT_COMMAND='rg -l ""'
+
+export FZF_DEFAULT_OPTS="--color=dark --margin=1,1 --color=fg:15,bg:-1,hl:1,fg+:#ffffff,bg+:0,hl+:1 --color=info:0,pointer:12,marker:4,spinner:11,header:-1"
+export FZF_DEFAULT_COMMAND="git ls-files --cached --others --exclude-standard || fd --type f --type l --hidden --follow"
 
 platform=$(uname)
 
@@ -153,3 +155,5 @@ export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 # complete -o nospace -C /opt/homebrew/bin/terraform terraform
 
 export SSH_CONNECTION
+
+export MANPAGER="nvim +Man!"

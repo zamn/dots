@@ -37,6 +37,8 @@ Plug 'hrsh7th/cmp-path'
 Plug 'L3MON4D3/LuaSnip'
 Plug 'saadparwaiz1/cmp_luasnip'
 
+Plug 'folke/trouble.nvim'
+
 " Formatter
 Plug 'stevearc/conform.nvim'
 
@@ -103,10 +105,16 @@ Plug 'gregsexton/gitv', {'on': ['Gitv']}
 
 Plug 'hashivim/vim-terraform'
 
+Plug 'chriskempson/base16-vim'
+
 call plug#end()
 
 " Reverting to old vim colorscheme
-colorscheme vim
+" colorscheme vim
+" autocmd ColorScheme vim
+let base16colorspace=256  " Access colors present in 256 colorspace
+" colorscheme vim
+colorscheme base16-default-dark
 
 lua<<EOF
 vim.o.termguicolors = false
@@ -129,10 +137,12 @@ require("typescript-tools").setup {
     tsserver_plugins = {},
     -- this value is passed to: https://nodejs.org/api/cli.html#--max-old-space-sizesize-in-megabytes
     -- memory limit in megabytes or "auto"(basically no limit)
-    tsserver_max_memory = "8192",
+    tsserver_max_memory = 12000,
     -- described below
     tsserver_format_options = {},
-    tsserver_file_preferences = {},
+    tsserver_file_preferences = {
+      importModuleSpecifierPreference = "relative"
+    },
     -- locale of all tsserver messages, supported locales you can find here:
     -- https://github.com/microsoft/TypeScript/blob/3c221fc086be52b19801f6e8d82596d04607ede6/src/compiler/utilitiesPublic.ts#L620
     tsserver_locale = "en",
@@ -184,7 +194,7 @@ cmp.setup({
   sources = cmp.config.sources({
     { name = "nvim_lsp" },
     { name = "luasnip" },
-    { name = 'nvim_lsp_signature_help' },
+    { name = 'nvim_lsp_signature_help', },
     { name = "path" },
     { name = "crates" },
     {
@@ -235,12 +245,17 @@ require("conform").setup({
     lua = { "stylua" },
     javascript = { "prettierd", "prettier", stop_after_first = true },
     typescript = { "prettierd", "prettier", stop_after_first = true },
+    javascriptreact = { "prettierd", "prettier", stop_after_first = true },
+    typescriptreact = { "prettierd", "prettier", stop_after_first = true },
   },
 })
 
 require('lspconfig')['typescript-tools'].setup({
   capabilities = require('cmp_nvim_lsp').default_capabilities()
 })
+
+require("trouble").setup()
+
 EOF
 
 if !empty(glob('$HOME/.config/nvim/gitlab.vim'))
@@ -274,20 +289,33 @@ endfunction
 " Fix clipboard over ssh 4gud
 " TODO: This breaks if display is bork
 "
-let $SSH_CONNECTION = system('echo $SSH_CONNECTION')
-let g:clipboard = {
-   \   'name': 'ssh clipboard',
-   \   'copy': {
-   \      '+': ['bash', 'copy-over-ssh.sh'],
-   \      '*': ['bash', 'copy-over-ssh.sh'],
-   \    },
-   \   'paste': {
-   \      '+': ['xclip', '-select', 'clipboard', '-o'],
-   \      '*': ['xclip', '-select', 'clipboard', '-o'],
-   \   },
-   \   'cache_enabled': 1,
-   \ }
+" let $SSH_CONNECTION = system('echo $SSH_CONNECTION')
+" let g:clipboard = {
+"    \   'name': 'ssh clipboard',
+"    \   'copy': {
+"    \      '+': ['bash', 'copy-over-ssh.sh'],
+"    \      '*': ['bash', 'copy-over-ssh.sh'],
+"    \    },
+"    \   'paste': {
+"    \      '+': ['xclip', '-select', 'clipboard', '-o'],
+"    \      '*': ['xclip', '-select', 'clipboard', '-o'],
+"    \   }
+"    \ }
 
+
+lua<<EOF
+vim.g.clipboard = {
+  name = 'OSC 52',
+  copy = {
+    ['+'] = require('vim.ui.clipboard.osc52').copy '+',
+    ['*'] = require('vim.ui.clipboard.osc52').copy '*',
+  },
+  paste = {
+    ['+'] = require('vim.ui.clipboard.osc52').paste '+',
+    ['*'] = require('vim.ui.clipboard.osc52').paste '*',
+  },
+}
+EOF
 
 " CTRL-W < Decrease current window width by N (default 1).
 " CTRL-W > Increase current window width by N (default 1).
@@ -524,16 +552,13 @@ nmap <leader>td :lua vim.lsp.buf.definition()<CR>
 " Formatter
 nmap <leader>p :lua require("conform").format()<CR>
 
+nmap <leader>xx :Trouble diagnostics toggle<CR>
 
-" hi CocErrorFloat ctermfg=white guifg=white ctermbg=brown
-" hi CocInfoFloat ctermfg=darkblue guifg=darkblue
-" hi CocWarningFloat ctermfg=brown guifg=brown
-
-hi Pmenu ctermbg=gray guibg=gray ctermfg=black guifg=black
-hi PmenuSel ctermbg=darkgray guibg=darkgray ctermfg=black guifg=black
+" hi Pmenu ctermbg=gray guibg=gray ctermfg=black guifg=black
+" hi PmenuSel ctermbg=darkgray guibg=darkgray ctermfg=black guifg=black
 "hi link Pmenu PmenuSel
-hi link Pmenu PmenuSbar
-hi link Pmenu PmenuThumb
+" hi link Pmenu PmenuSbar
+" hi link Pmenu PmenuThumb
 
 " Disable highlight when <leader><cr> is pressed
 map <silent> <leader><cr> :noh<cr>
