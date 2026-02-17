@@ -8,6 +8,6 @@ config/.config/coc/extensions
 git/code/.gitconfig
 config/.config/coc/mru
 .DS_Store
-gnupg
 coc
 git/work/*
+gnupg/.gnupg
