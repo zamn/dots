@@ -3,8 +3,16 @@
 . bash/.keys.bash
 hasStow=`PATH=$PATH:. command -v stow >/dev/null; echo $?`
 
+# install base16
+# git clone https://github.com/chriskempson/base16-shell.git ~/.config/base16-shell
+
 # This hack will live 4ever
 platform=${platform:-$(uname -a | awk '{print $1}')}
+
+# Always make these even if they exist
+# we do not want stow to symlink these
+mkdir -p ~/code
+mkdir -p ~/work
 
 # create psql config folder to store history
 mkdir -p ~/.config/psql/
@@ -14,9 +22,8 @@ then
   echo "Please install GNU stow through your package manager."
   if [[ "$platform" != "Linux" ]]
   then
-    echo "Installing brew packages.."
-    # generate via $(brew leaves > brew_packages.txt)
-    xargs brew install < brew_packages.txt
+    # Install stow thats in Bundlefile
+    brew bundle
   else
     exit 1
   fi

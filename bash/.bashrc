@@ -157,3 +157,5 @@ export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 export SSH_CONNECTION
 
 export MANPAGER="nvim +Man!"
+
+export CLAUDE_CONFIG_DIR=/Users/ahamot/.config/claude-code

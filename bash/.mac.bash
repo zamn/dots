@@ -51,10 +51,25 @@ then
     export DISPLAY="$(tmux show-env | sed -n 's/^DISPLAY=//p')"
 fi
 
-export PATH="/usr/local/opt/libpq/bin:$PATH"
-
 alias ls="ls -GF"
+
+BASE16_SHELL="$HOME/.config/base16-shell/"
+[ -n "$PS1" ] && \
+    [ -s "$BASE16_SHELL/profile_helper.sh" ] && \
+        source "$BASE16_SHELL/profile_helper.sh"
+
+base16_default-dark
 
 alias fix_keychain="security -v unlock-keychain ~/Library/Keychains/login.keychain-db"
 eval "$(/opt/homebrew/bin/brew shellenv)"
-export PSQL_PAGER="pspg -X -I --menu-always --no-last-row-search --no-scrollbar --no-sound --vertical-cursor"
+
+export PSQL_PAGER="pspg -X -I --menu-always -s 17 --no-last-row-search --no-scrollbar --no-sound --vertical-cursor"
+export TERMINFO_DIRS=$TERMINFO_DIRS:/Applications/kitty.app/Contents/Resources/terminfo/
+# alias docker=podman
+
+# for pg_dump
+# TODO: Only use pg_dump 16 as psql 16 breaks readline
+# export PATH="/opt/homebrew/opt/libpq@16/bin:$PATH"
+
+alias pg_dump="PATH="/opt/homebrew/opt/libpq@16/bin:$PATH" pg_dump"
+
