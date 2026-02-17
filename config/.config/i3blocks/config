@@ -72,24 +72,20 @@ interval=30
 # If the instance is not specified, use the interface used for default route.
 # The address can be forced to IPv4 or IPv6 with -4 or -6 switches.
 [iface]
-#IFACE=wlp4s0
+#IFACE=wlan0
 color=#00FF00
 interval=10
 separator=false
 
 [wifi]
-INTERFACE=wlp4s0
+INTERFACE=wlan0
 label=wifi:
 interval=10
 separator=false
 
 [essid]
 interval=60
-INTERFACE=wlp4s0
-
-#[bandwidth]
-#INTERFACE=wlp4s0
-#interval=5
+INTERFACE=wlan0
 
 # CPU usage
 #

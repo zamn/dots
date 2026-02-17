@@ -1,6 +1,6 @@
 #!/bin/sh
 lock() {
-  xsecurelock
+  env XSECURELOCK_PASSWORD_PROMPT=kaomoji xsecurelock
 }
 
 case "$1" in
