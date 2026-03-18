@@ -7,3 +7,4 @@ debug/
 .nvimrc
 # Why would you ever commit this lewl
 .git/
+.fzf-include

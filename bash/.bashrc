@@ -104,7 +104,11 @@ bind -m vi-insert "\C-l":clear-screen
 export RIPGREP_CONFIG_PATH=~/.config/ripgrep/.ripgreprc
 
 export FZF_DEFAULT_OPTS="--color=dark --margin=1,1 --color=fg:15,bg:-1,hl:1,fg+:#ffffff,bg+:0,hl+:1 --color=info:0,pointer:12,marker:4,spinner:11,header:-1"
-export FZF_DEFAULT_COMMAND="git ls-files --cached --others --exclude-standard || fd --type f --type l --hidden --follow"
+# To get around ignored files just create and add file name to .fzf-include
+export FZF_DEFAULT_COMMAND='(git ls-files --cached --others --exclude-standard || fd --type f --type l --hidden --follow) | cat - <([ -f .fzf-include ] && while IFS= read -r pattern; do fd --type f --type l --hidden --no-ignore "$pattern"; done < .fzf-include)'
+
+
+
 
 platform=$(uname)
 
@@ -157,5 +161,3 @@ export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 export SSH_CONNECTION
 
 export MANPAGER="nvim +Man!"
-
-export CLAUDE_CONFIG_DIR=/Users/ahamot/.config/claude-code

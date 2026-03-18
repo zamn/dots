@@ -1,7 +1,9 @@
+[user]
+  name = Adam Hamot
+  email =
+  signingkey =
 [includeIf "gitdir:~/work/"]
   path = ~/work/.gitconfig
-[includeIf "gitdir:~/code/"]
-  path = ~/code/.gitconfig
 [includeIf "gitdir:~/interviews/"]
   path = ~/code/.gitconfig
 [color]

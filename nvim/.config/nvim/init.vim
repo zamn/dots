@@ -120,6 +120,7 @@ colorscheme base16-default-dark
 " CTRL-W < Decrease current window width by N (default 1).
 " CTRL-W > Increase current window width by N (default 1).
 let g:NERDTreeWinSize=35
+let g:NERDTreeShowHidden=1
 map <F2> :NERDTreeToggle<CR>
 
 let g:airline#extensions#tabline#formatter = 'unique_tail'
