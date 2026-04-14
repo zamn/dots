@@ -38,6 +38,8 @@ Plug 'hrsh7th/cmp-path'
 Plug 'L3MON4D3/LuaSnip'
 Plug 'saadparwaiz1/cmp_luasnip'
 
+Plug 'nikvdp/ejs-syntax'
+
 Plug 'folke/trouble.nvim'
 
 " Formatter

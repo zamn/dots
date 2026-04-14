@@ -24,6 +24,7 @@ then
   then
     # Install stow thats in Bundlefile
     brew bundle
+    brew link --force libpq
   else
     exit 1
   fi

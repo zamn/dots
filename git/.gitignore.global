@@ -8,3 +8,6 @@ debug/
 # Why would you ever commit this lewl
 .git/
 .fzf-include
+*.png
+*.svg
+diagrams/

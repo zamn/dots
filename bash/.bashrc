@@ -91,10 +91,8 @@ fi
 set -o vi
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/local/go/bin:/usr/local/go/bin:~/.bin
 export GOPATH=$HOME/code/go
-export GOROOT='/usr/lib/go'
 export GOBIN=$GOPATH/bin
 
-export PATH=$PATH:$GOROOT/bin:$GOBIN
 export PATH=$PATH:/mnt/c/Windows/System32
 export PATH=$PATH:./node_modules/.bin
 export PATH=$PATH:$HOME/.local/bin
@@ -161,3 +159,6 @@ export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 export SSH_CONNECTION
 
 export MANPAGER="nvim +Man!"
+unzipd() { unzip -d "${1%.zip}" "$1"; }
+export -f unzipd
+

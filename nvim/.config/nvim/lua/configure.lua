@@ -61,6 +61,14 @@ require("typescript-tools").setup({
 	capabilities = require("cmp_nvim_lsp").default_capabilities(),
 })
 
+vim.lsp.enable("ruby_lsp")
+vim.lsp.config("ruby_lsp", {
+	init_options = {
+		formatter = "standard",
+		linters = { "standard" },
+	},
+})
+
 -- vim.lsp.enable("bashls")
 
 -- set up nvim-cmp.
@@ -479,8 +487,7 @@ require("fzf-lua").setup({
 		-- follow = true,
 		no_ignore = false, -- respect ".gitignore"  by default
 		rg_opts = [[--files --follow --hidden]],
-        raw_cmd = [[{ git ls-files --cached --others --exclude-standard || fd --type f --type l --hidden --follow; fzf_include=$(d=$(pwd); while [ "$d" != "/" ]; do [ -f "$d/.fzf-include" ] && echo "$d/.fzf-include" && break; d=$(dirname "$d"); done); if [ -n "$fzf_include" ]; then while IFS= read -r pattern; do fd --type f --type l --hidden --no-ignore "$pattern"; done < "$fzf_include"; fi; }]],
-
+		raw_cmd = [[{ git ls-files --cached --others --exclude-standard || fd --type f --type l --hidden --follow; fzf_include=$(d=$(pwd); while [ "$d" != "/" ]; do [ -f "$d/.fzf-include" ] && echo "$d/.fzf-include" && break; d=$(dirname "$d"); done); if [ -n "$fzf_include" ]; then while IFS= read -r pattern; do fd --type f --type l --hidden --no-ignore "$pattern"; done < "$fzf_include"; fi; }]],
 	},
 })
 

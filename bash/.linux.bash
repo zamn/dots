@@ -12,3 +12,6 @@ xmodmap ~/.Xmodmap
 
 # TODO make this linux only
 alias ssh="kitten ssh"
+
+export GOROOT='/usr/lib/go'
+export PATH=$PATH:$GOROOT/bin:$GOBIN

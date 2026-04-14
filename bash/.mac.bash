@@ -15,6 +15,8 @@ export -f rlpsql
 export PERLLIB=/Library/Developer/CommandLineTools/usr/share/git-core/perl:$PERLLIB
 
 alias firefox="open -a /Applications/Firefox.app"
+alias flowvision="open -a /Applications/FlowVision.app"
+
 
 # Set up homebrew
 eval "$(/opt/homebrew/bin/brew shellenv)"
