@@ -10,6 +10,8 @@ version: 1.0.0
 
 Produces readable Graphviz DOT diagrams and exports them to SVG. Applies a consistent set of layout and style rules that have been tuned for legibility at typical screen resolutions.
 
+*Always store your output in a diagrams/ directory in the current directory you are in. If it does not exist, create it first.*
+
 ## Process
 
 1. Analyse the subject matter and identify node groups, inheritance/composition/dependency edges.
@@ -147,15 +149,84 @@ For projects with different groups, keep the two-tone rule: cluster fill is a pa
 
 ---
 
+## Cluster Rules for Pipeline / Flow Diagrams
+
+These rules apply specifically when diagramming request-reply flows, message queues, and pipelines (as opposed to class hierarchies).
+
+### Never put non-consecutive-rank nodes in the same cluster
+
+If a service participates at **both ends** of a pipeline (e.g., it publishes at step 3 and consumes at step 10), do **not** put both roles in a single cluster. Graphviz will try to make the cluster span ranks 3–10, with alien nodes at ranks 4–9 in between, and will **reverse edges** to resolve the inconsistency — the diagram appears backwards.
+
+**Fix:** Split into two clusters: one for the publish path, one for the consume path.
+
+```dot
+subgraph cluster_api_produce {
+  label="my-service (publish path)";
+  // ... nodes at consecutive ranks 2-5 ...
+}
+
+subgraph cluster_api_consume {
+  label="my-service (consume path)";
+  // ... nodes at consecutive ranks 10-11 ...
+}
+```
+
+### Never cluster nodes that sit at different pipeline ranks
+
+Two objects at different ranks (e.g., two SQS queues, one at rank 6 and one at rank 9) must **not** share a cluster. A cluster forces its members to adjacent ranks, collapsing them to the same row and folding the pipeline spine back on itself.
+
+**Fix:** Style these nodes distinctively (e.g., thick border, amber fill) without any cluster:
+
+```dot
+SdkGenInQueue [fillcolor="#ffcc88", color="#cc6600", penwidth=2, width=3.2];
+CodeFormatterOutQueue [fillcolor="#ffbb66", color="#cc6600", penwidth=2, width=3.4];
+// No cluster — just unique styling
+```
+
+### Keep ALL edges constraint=true for pipeline diagrams
+
+Floating nodes — nodes whose only incoming edges are `constraint=false` — are assigned rank 0 (the top in TB layout) and can be pushed far to one side, producing an extremely wide or misaligned diagram.
+
+**Fix:** For pipeline/flow diagrams, use `constraint=true` (the default) on every edge. Let graphviz assign all ranks automatically. Do **not** add `constraint=false` anywhere unless you have a specific, tested reason.
+
+### Never use `rank=same` across cluster boundaries
+
+`rank=same { NodeA NodeB }` silently removes nodes from their clusters when NodeA and NodeB are in different clusters (warning: "was already in a rankset, deleted from cluster"). Even `newrank=true` does not reliably fix this — it changes node placement in unpredictable ways.
+
+**Fix:** If you need to align nodes visually, keep them in the same cluster or use invisible edges (`style=invis`) sparingly as a last resort.
+
+---
+
+## Critical Edge Pitfall: `constraint=false` block default propagates
+
+**This is a graphviz gotcha that causes silent, hard-to-debug layout failures.**
+
+Setting `constraint=false` in an `edge []` block applies it as the default for every subsequent edge in the file — even edges defined after the block that don't mention `constraint` at all. This causes "trouble in init_rank" errors and completely broken layouts.
+
+**Never do this:**
+```dot
+edge [constraint=false];  // ← sets default; ALL edges below inherit it
+A -> B;  // ← now constraint=false even though you didn't write it
+```
+
+**Always set constraint per individual edge when you actually need it:**
+```dot
+A -> B [constraint=false];  // ← only this one edge is unconstrained
+```
+
+---
+
 ## Checking the Output
 
 After running `dot -Tsvg`:
 
 1. Check the `<svg width="..." height="...">` line.
-2. A good aspect ratio is roughly **1:1 to 2:1 (W:H)**. Much wider than 2:1 means too many nodes are on the same rank — consider splitting clusters or switching `rankdir`.
-3. If text is clipped inside nodes, increase `margin` or `width`.
-4. If cluster borders are huge and empty-looking, increase node `width` so nodes fill the cluster, or reduce cluster `margin`.
-5. If edge labels overlap nodes, switch to `splines=curved` or add `labelangle`/`labeldistance` attributes.
+2. For **LR (left-to-right)** diagrams, a good aspect ratio is **1:1 to 2:1 (W:H)**.
+   For **TB (top-to-bottom)** pipeline diagrams, portrait ratios like **1:1 to 1:2 (W:H)** are normal and expected — a deep pipeline is naturally tall.
+3. Verify the **direction** is correct: in a TB pipeline, the entry point (e.g., Client, HTTP request) should appear at the **top** of the SVG, not the bottom. If the diagram is reversed, a cluster is spanning non-consecutive ranks — apply the cluster split pattern above.
+4. If text is clipped inside nodes, increase `margin` or `width`.
+5. If cluster borders are huge and empty-looking, increase node `width` so nodes fill the cluster, or reduce cluster `margin`.
+6. If edge labels overlap nodes, switch to `splines=curved` or add `labelangle`/`labeldistance` attributes.
 
 ---
 
