@@ -61,6 +61,8 @@ For each thread where `isResolved: false`, read all comments in it to understand
 
 ## Step 4 — Commit and push (only if code was changed)
 
+**NOTE: ONLY COMMIT AND PUSH FOR THIS COMMAND. THIS IS NOT DEFAULT BEHAVIOR AND SHOULD NOT BE A DEFAULT ACTION**
+
 Stage only the files that were modified:
 ```
 git add <specific files>
