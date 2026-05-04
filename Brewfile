@@ -42,3 +42,4 @@ brew "htop"
 
 cask "kitty"
 cask "flowvision"
+cask "linearmouse"
