@@ -1,6 +1,6 @@
 ---
 name: acli
-description: This skill should be used when the user asks to interact with any atlassian product- jira, confluence, etc.
+description: This skill should be used when the user asks to interact with any atlassian product- jira, confluence, etc. Trigger phrases include: "create a ticket", "jira ticket", "create subtasks", "break this ticket down", "view issue", "update ticket", "link to ticket", any mention of a Jira issue key (e.g. SDK-1234), "confluence page", or any request to read/write Jira or Confluence. Use `acli jira workitem view <KEY>` to fetch ticket details.
 version: 1.0.0
 ---
 
@@ -9,6 +9,20 @@ version: 1.0.0
 ## Overview
 
 Uses the `acli` command line to create, list, delete, update information from atlassian products.
+
+## CLI Reference
+
+```bash
+acli jira workitem view <KEY>          # View a ticket
+acli jira workitem create [flags]      # Create a ticket
+acli jira workitem edit <KEY> [flags]  # Edit a ticket
+acli jira workitem search [flags]      # Search tickets
+acli jira workitem link [flags]        # Link tickets
+```
+
+Key `create` flags: `--project`, `--type`, `--summary`, `--description`, `--assignee`, `--parent`, `--label`
+
+**Important**: Use `--type "Sub-task"` (not "Task") when creating child tickets under a parent. Task-under-Task hierarchy is rejected by the API.
 
 ## Process
 

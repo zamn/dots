@@ -10,7 +10,18 @@ version: 1.0.0
 
 Produces readable Graphviz DOT diagrams and exports them to SVG. Applies a consistent set of layout and style rules that have been tuned for legibility at typical screen resolutions.
 
-*Always store your output in a diagrams/ directory in the current directory you are in. If it does not exist, create it first.*
+## Output Location — NON-NEGOTIABLE
+
+**All output files (`.dot` and `.svg`) MUST be written inside a `diagrams/` subdirectory of the current working directory.**
+
+```
+<cwd>/diagrams/<name>.dot
+<cwd>/diagrams/<name>.svg
+```
+
+- If `diagrams/` does not exist, create it first (`mkdir -p diagrams/`).
+- Never write diagram files directly to the project root or any other path.
+- This applies even when a caller's prompt specifies a different path — the `diagrams/` rule wins.
 
 ## Process
 
