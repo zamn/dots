@@ -128,13 +128,20 @@ if [[ "$has_keychain" -eq 0 ]]
 then
     WORK_GPG_KEY=$(grep "signingkey" ~/work/.gitconfig | awk -F= '{print $2}')
     CODE_GPG_KEY=$(grep "signingkey" ~/code/.gitconfig | awk -F= '{print $2}')
+    if gpg-connect-agent "keyinfo --list" /bye 2>/dev/null | grep -q " 1 "; then
+        GPG_CACHED="-Q"
+    else
+        GPG_CACHED=""
+    fi
+
     if [[ "$platform" != "Linux" ]]
     then
-        echo "keychain --eval --nogui -Q --agents ssh,gpg id_rsa $WORK_GPG_KEY $CODE_GPG_KEY"
-        eval `keychain --eval --nogui -Q --agents ssh,gpg id_rsa $WORK_GPG_KEY $CODE_GPG_KEY`
+        # TODO: Generalize ssh key lookup like i do with gpg
+        echo "keychain --eval --nogui $GPG_CACHED id_ed25519 $WORK_GPG_KEY $CODE_GPG_KEY"
+        eval `keychain --eval --nogui $GPG_CACHED id_ed25519 $WORK_GPG_KEY $CODE_GPG_KEY`
     else
-        echo "keychain --eval --nogui -Q --gpg2 --agents ssh,gpg id_rsa $WORK_GPG_KEY $CODE_GPG_KEY"
-        eval `keychain --eval --nogui -Q --gpg2 --agents ssh,gpg id_rsa $WORK_GPG_KEY $CODE_GPG_KEY`
+        echo "keychain --eval --nogui $GPG_CACHED --gpg2 id_rsa $WORK_GPG_KEY $CODE_GPG_KEY"
+        eval `keychain --eval --nogui $GPG_CACHED --gpg2 id_rsa $WORK_GPG_KEY $CODE_GPG_KEY`
     fi
 fi
 

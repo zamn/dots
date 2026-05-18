@@ -74,5 +74,17 @@ export TERMINFO_DIRS=$TERMINFO_DIRS:/Applications/kitty.app/Contents/Resources/t
 # TODO: Only use pg_dump 16 as psql 16 breaks readline
 # export PATH="/opt/homebrew/opt/libpq@16/bin:$PATH"
 
+export PATH=$PATH:/usr/local/share/dotnet
+
 alias pg_dump="PATH="/opt/homebrew/opt/libpq@16/bin:$PATH" pg_dump"
 
+# Init Ruby
+eval "$(rbenv init -)"
+
+export AWS_PROFILE=localstack
+export PATH=$PATH:$GOPATH/bin
+
+launchctl setenv SSH_AUTH_SOCK "$SSH_AUTH_SOCK"
+launchctl setenv SSH_AGENT_PID "$SSH_AGENT_PID"
+GPG_SOCK="$(gpgconf --list-dirs agent-socket 2>/dev/null)"
+[[ -n "$GPG_SOCK" ]] && launchctl setenv GPG_AGENT_INFO "${GPG_SOCK}:0:1"
