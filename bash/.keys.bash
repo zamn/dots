@@ -6,3 +6,4 @@ export GITLAB_API_PAT=''
 export PAGER=less
 export VPN=''
 export FIREFOX_PROFILE_DIR=''
+export ATLASSIAN_API_TOKEN=''
