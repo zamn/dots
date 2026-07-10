@@ -1,80 +1,95 @@
 ---
-description: Review and resolve open PR comments
-argument-hint: [pr-url]
+description: Read, address, reply to, and resolve review comments on a GitHub PR
+argument-hint: [pr-url-or-number]
 ---
 
-Review and resolve all open comments on a GitHub pull request.
+Review and address comments on the current branch's GitHub pull request.
 
-If a PR URL was provided use it: $ARGUMENTS
+If a PR URL or number was provided, use it: $ARGUMENTS
 
-Otherwise fall back to the current branch's PR.
+## Scope
 
-## Step 1 — Find the PR
+- Use GitHub via the `gh` CLI.
+- If no PR argument is provided, detect the PR for the current branch.
+- If the PR branch has a matching local worktree, use that worktree.
+- If no matching worktree exists, continue from the current repo root. Missing worktree is not a blocker.
+- Address unresolved review threads and actionable issue comments.
+- If the PR has merge conflicts, fix them as part of this command before finalizing.
 
-If a URL was provided, extract the PR number from it (e.g. `.../pull/254` → `254`) and the owner/repo from the URL path.
+## Step 1 - Resolve the PR
 
-Otherwise detect from the current branch:
-```
-gh pr view --json number,url,title,headRefName,baseRefName
-```
+If an argument was provided, resolve it:
 
-Get OWNER/REPO from: `gh repo view --json nameWithOwner`
-
-## Step 1b — Verify the tracking (base) branch — MANDATORY
-
-**This check is required before any changes are made to the PR.**
-
-```
-gh pr view <NUMBER> --json baseRefName,headRefName,url
+```bash
+gh pr view <pr-url-or-number> --json number,url,title,headRefName,baseRefName,author,mergeStateStatus,mergeable
 ```
 
-Confirm `baseRefName` matches what you expect (typically `develop`, or the stacked base branch
-for stacked PRs). If it does not match, **stop immediately** and report the discrepancy to the
-user. Do not push code, reply to comments, or resolve threads until the user confirms the base
-is correct.
+Otherwise resolve the current branch's PR:
 
-## Step 1c — Locate worktree and load context (non-blocking)
+```bash
+gh pr view --json number,url,title,headRefName,baseRefName,author,mergeStateStatus,mergeable
+```
 
-Find the local worktree for this PR's branch (from `headRefName` in Step 1):
+Also get the repo:
+
+```bash
+gh repo view --json nameWithOwner
+```
+
+## Step 2 - Prefer the PR worktree when available
+
+Find a matching local worktree for `headRefName`:
 
 ```bash
 git worktree list --porcelain
 ```
 
-Scan for a block whose `branch` field is `refs/heads/<headRefName>`.
+If a block has `branch refs/heads/<headRefName>`, run all subsequent file edits and git commands from that `worktree` path.
 
-- **Match found** → set working directory to that worktree path for all file reads, edits, and
-  git commands. Then check the branch name for a JIRA ticket ID (`[A-Z][A-Z0-9]+-\d+`). If
-  found, fetch the ticket:
-  ```bash
-  acli jira workitem view <TICKET-ID> --json
-  ```
-  Read `fields.summary`, `fields.description`, and `fields.comment.comments` for background
-  context. Do **not** transition the ticket status.
-- **No match** → note "no local worktree found for this PR" and continue from the repo root.
-  This is not an error. Do not block, do not ask.
+If no match exists, continue in the current repo root. Report that no worktree was found, but do not stop.
 
-## Step 2 — Fetch ALL comment sources in parallel
+## Step 3 - Sync and check conflicts
 
-Run all three fetches at once:
+Fetch the base branch and PR head:
 
-**A. Inline review threads (GraphQL):**
+```bash
+git fetch origin <baseRefName>
+git fetch origin <headRefName>
 ```
-gh api graphql -f query='
-{
-  repository(owner: "OWNER", name: "REPO") {
-    pullRequest(number: NUMBER) {
-      reviewThreads(first: 50) {
+
+Check whether the PR is conflicted or dirty:
+
+```bash
+gh pr view <number> --json mergeStateStatus,mergeable
+git status --short
+```
+
+If the PR has merge conflicts, fix them before resolving comments. Merge or rebase onto the latest base branch according to the repo's normal workflow. If the conflict cannot be resolved mechanically, ask the user with the conflicted files and the choices.
+
+## Step 4 - Fetch review threads and comments
+
+Fetch unresolved review threads with GraphQL:
+
+```bash
+gh api graphql -f owner='<owner>' -f name='<repo>' -F number=<number> -f query='
+query($owner: String!, $name: String!, $number: Int!) {
+  repository(owner: $owner, name: $name) {
+    pullRequest(number: $number) {
+      reviewThreads(first: 100) {
         nodes {
           id
           isResolved
-          comments(first: 20) {
+          path
+          line
+          originalLine
+          comments(first: 50) {
             nodes {
+              id
               databaseId
               author { login }
               body
-              path
-              line
+              url
+              createdAt
             }
           }
         }
@@ -84,85 +99,76 @@ gh api graphql -f query='
 }'
 ```
 
-**B. PR-level reviews with bodies (REST):**
-```
-gh api repos/OWNER/REPO/pulls/NUMBER/reviews
-```
-These are top-level review summaries (not inline). Process any review whose `body` is non-empty.
+Also fetch issue comments for non-inline actionable feedback:
 
-**C. General issue comments (REST):**
-```
-gh api repos/OWNER/REPO/issues/NUMBER/comments
+```bash
+gh api repos/<owner>/<repo>/issues/<number>/comments
 ```
 
-Never skip comments based on author — process comments from bots, reviewers, and the PR author equally.
+Ignore resolved review threads unless the user explicitly asks to revisit them.
 
-## Step 3 — Process each item that needs attention
+## Step 5 - Decide and act
 
-**Inline threads (from A):** Process if `isResolved: false`, OR if `isResolved: true` with only 1 comment (resolved but never replied to — reply, skip re-resolving).
+For each unresolved thread or actionable comment:
 
-**PR-level reviews (from B):** Process every review with a non-empty `body`. These do not have a "resolved" state — always reply.
+- If it asks for a valid code change, make the smallest correct change.
+- If it is already addressed by current code, prepare a reply explaining why.
+- If it is wrong, prepare a reply explaining the evidence.
+- If the right resolution is unclear, stop and ask the user. If multiple valid fixes exist, ask which one to take.
+- Do not invent intent from ambiguous feedback.
 
-**Issue comments (from C):** Process every comment. These do not have a "resolved" state — always reply.
+If code changed, run the relevant focused checks for the touched area. Then commit and push:
 
-For each item, read all comments/body to understand the full context.
-
-**Decision logic:**
-- If the fix is clear → make the code change, then proceed to Step 4
-- If the fix is unclear or has multiple valid options → stop and ask the user before proceeding
-- If no code change is needed (already correct, out of scope, acknowledged, etc.) → skip to Step 4
-
-## Step 4 — Commit and push (only if code was changed)
-
-**NOTE: ONLY COMMIT AND PUSH FOR THIS COMMAND. THIS IS NOT DEFAULT BEHAVIOR AND SHOULD NOT BE A DEFAULT ACTION**
-
-Stage only the files that were modified:
-```
-git add <specific files>
-git commit -m "<concise description of fix>
-
-Co-Authored-By: Claude <noreply@anthropic.com>"
-git push
+```bash
+git status --short
+git add <changed-files>
+git commit -m "Address PR review comments"
+git push origin <headRefName>
 ```
 
-## Step 5 — Reply
+Use a more specific commit message when the change has a clear scope.
 
-**For inline thread comments** — reply to the root comment's `databaseId`:
-```
-gh api repos/OWNER/REPO/pulls/comments/COMMENT_ID/replies \
-  --method POST \
-  --field body='<explanation>'
-```
-If that returns 404, fall back to a general issue comment quoting the path and line:
-```
-gh api repos/OWNER/REPO/issues/NUMBER/comments \
-  --method POST \
-  --field body='Re `PATH` line LINE: <explanation>'
+## Step 6 - Reply and resolve
+
+For every handled review thread, reply with the resolution, then resolve the thread.
+
+Reply to a review comment:
+
+```bash
+gh api repos/<owner>/<repo>/pulls/comments/<comment-database-id>/replies -f body='<reply>'
 ```
 
-**For PR-level reviews and issue comments** — post a general issue comment:
-```
-gh api repos/OWNER/REPO/issues/NUMBER/comments \
-  --method POST \
-  --field body='<explanation>'
-```
+Resolve the thread:
 
-## Step 6 — Resolve inline threads
-
-For each inline thread that was `isResolved: false`, resolve it using the GraphQL node ID from Step 2A:
-```
-gh api graphql -f query='
-mutation {
-  resolveReviewThread(input: {threadId: "THREAD_NODE_ID"}) {
-    thread { isResolved }
-  }
-}'
+```bash
+gh api graphql -f threadId='<thread-id>' -f query='mutation($threadId: ID!) { resolveReviewThread(input: {threadId: $threadId}) { thread { id isResolved } } }'
 ```
 
-PR-level reviews and issue comments have no resolve state — skip this step for them.
+For issue comments, reply with a normal PR comment when needed:
 
-## Notes
+```bash
+gh pr comment <number> --body '<reply>'
+```
 
-- Bot comments (nitpickybot, gemini, wiz, etc.) are treated the same as human comments
-- PR author comments are treated the same as reviewer comments — never skip based on author
-- Never use `git add -A` or `git add .` — stage specific files only
+When commenting through Adam's GitHub account, include this footer:
+
+```text
+Sent by Claude on behalf of Adam
+```
+
+## Step 7 - Verify and report
+
+After pushing and resolving comments, verify PR state:
+
+```bash
+gh pr view <number> --json url,mergeStateStatus,mergeable,reviewDecision,statusCheckRollup
+```
+
+Report:
+
+- PR URL
+- Comments handled
+- Code changes made
+- Commit pushed, if any
+- Checks run
+- Remaining unresolved or unclear comments
