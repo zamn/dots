@@ -1,0 +1,133 @@
+#!/usr/bin/env node
+
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
+
+const firefoxRoot = path.join(os.homedir(), 'Library/Application Support/Firefox');
+
+function decodeLz4Block(input) {
+  const magic = input.subarray(0, 8).toString('binary');
+  if (magic !== 'mozLz40\0') {
+    throw new Error(`Unexpected Firefox session magic ${JSON.stringify(magic)}`);
+  }
+
+  const src = input.subarray(12); // 8-byte magic + 4-byte uncompressed length.
+  const out = [];
+  let i = 0;
+
+  while (i < src.length) {
+    const token = src[i++];
+    let literalLength = token >> 4;
+    if (literalLength === 15) {
+      let value;
+      do {
+        value = src[i++];
+        literalLength += value;
+      } while (value === 255);
+    }
+
+    for (let end = i + literalLength; i < end; i++) {
+      out.push(src[i]);
+    }
+    if (i >= src.length) break;
+
+    const offset = src[i] | (src[i + 1] << 8);
+    i += 2;
+    let matchLength = token & 15;
+    if (matchLength === 15) {
+      let value;
+      do {
+        value = src[i++];
+        matchLength += value;
+      } while (value === 255);
+    }
+    matchLength += 4;
+
+    const start = out.length - offset;
+    if (start < 0) {
+      throw new Error('Invalid Firefox session LZ4 offset');
+    }
+    for (let j = 0; j < matchLength; j++) {
+      out.push(out[start + j]);
+    }
+  }
+
+  return Buffer.from(out).toString('utf8');
+}
+
+function getProfiles() {
+  const profilesDir = path.join(firefoxRoot, 'Profiles');
+  if (!fs.existsSync(profilesDir)) return [];
+  return fs
+    .readdirSync(profilesDir)
+    .map((entry) => path.join(profilesDir, entry))
+    .filter((entry) => fs.existsSync(path.join(entry, 'sessionstore-backups')));
+}
+
+function getSessionFiles() {
+  return getProfiles()
+    .flatMap((profile) => {
+      const backupDir = path.join(profile, 'sessionstore-backups');
+      return ['recovery.jsonlz4', 'recovery.baklz4', 'previous.jsonlz4']
+        .map((name) => path.join(backupDir, name))
+        .filter((file) => fs.existsSync(file));
+    })
+    .map((file) => ({ file, mtimeMs: fs.statSync(file).mtimeMs }))
+    .sort((left, right) => right.mtimeMs - left.mtimeMs)
+    .map(({ file }) => file);
+}
+
+function getTabs() {
+  const errors = [];
+  for (const file of getSessionFiles()) {
+    try {
+      const session = JSON.parse(decodeLz4Block(fs.readFileSync(file)));
+      const tabs = [];
+      for (const [windowIndex, win] of (session.windows || []).entries()) {
+        for (const [tabIndex, tab] of (win.tabs || []).entries()) {
+          const entry = tab.entries?.[(tab.index || 1) - 1] || tab.entries?.[tab.entries.length - 1];
+          if (entry?.url) {
+            tabs.push({
+              window: windowIndex + 1,
+              tab: tabIndex + 1,
+              title: entry.title || '',
+              url: entry.url,
+            });
+          }
+        }
+      }
+      return tabs;
+    } catch (error) {
+      errors.push(`${file}: ${error.message}`);
+    }
+  }
+  throw new Error(`Unable to decode Firefox session store. ${errors.join('; ')}`);
+}
+
+function toFileUrl(value) {
+  if (!value || /^[a-z][a-z0-9+.-]*:/i.test(value)) return value;
+  const absolute = path.resolve(value);
+  return `file://${absolute.split(path.sep).map(encodeURIComponent).join('/')}`;
+}
+
+function contains(target) {
+  const fileUrl = toFileUrl(target);
+  const basename = path.basename(target);
+  const needles = [target, fileUrl, basename].filter(Boolean);
+  return getTabs().some((tab) => needles.some((needle) => tab.url.includes(needle) || tab.title.includes(needle)));
+}
+
+const args = process.argv.slice(2);
+if (args[0] === '--contains') {
+  const target = args.slice(1).join(' ');
+  if (!target) {
+    console.error('Usage: firefox-open-tabs --contains <file-path-or-url>');
+    process.exit(2);
+  }
+  process.exit(contains(target) ? 0 : 1);
+}
+
+for (const tab of getTabs()) {
+  console.log(`${tab.window}.${tab.tab}\t${tab.title}\t${tab.url}`);
+}

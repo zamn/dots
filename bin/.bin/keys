@@ -1,0 +1,146 @@
+#!/usr/bin/env bash
+# keys — manage secret env vars in the macOS login keychain.
+#
+# Secrets live ONLY in the keychain, never in a tracked dotfile. The keychain
+# is unlocked at login, so reads are silent (no prompt) for later shells.
+#
+# Usage:
+#   keys list              # show which secrets are set (values masked)  [default]
+#   keys set <NAME>        # prompt (hidden) for a value and store it
+#   keys set-all           # walk every known secret, prompt for each (blank = keep)
+#   keys get <NAME>        # print the stored value to stdout (for scripts)
+#   keys load              # emit `export NAME=...` lines to eval in your shell
+#   keys rm <NAME>         # delete a secret from the keychain
+#
+# Wire into your shell (see ~/.keys.bash):
+#   command -v keys >/dev/null && eval "$(keys load)"
+
+set -u
+
+# ── Config ──────────────────────────────────────────────────────────────────
+# The list of secret env-var NAMES is data, not code: it lives in KEYS_LIST_FILE,
+# one name per line. That file (shipped via dots) is the single source of truth —
+# there is no in-script copy to drift out of sync.
+KEYS_LIST_FILE="${KEYS_LIST_FILE:-$HOME/.config/keys/secrets}"
+ACCOUNT="${USER}"
+SECRET_KEYS=()   # populated by load_key_names(), called once in main()
+
+# ── Keychain primitives (the only code that touches `security`) ──────────────
+_service() { printf 'env.%s' "$1"; }
+
+kc_get() {
+  security find-generic-password -a "$ACCOUNT" -s "$(_service "$1")" -w 2>/dev/null
+}
+
+# -U: update if present. -A: readable by same-user processes without a prompt
+# (no worse than the plaintext dotfile this replaces; use -T /usr/bin/security
+# instead if you want per-read prompts).
+kc_set() {
+  security add-generic-password -U -A \
+    -a "$ACCOUNT" -s "$(_service "$1")" -l "$(_service "$1")" -w "$2"
+}
+
+kc_rm() {
+  security delete-generic-password -a "$ACCOUNT" -s "$(_service "$1")" >/dev/null 2>&1
+}
+
+# ── Helpers ─────────────────────────────────────────────────────────────────
+# Read a value with the prompt on stderr and the input hidden; value -> stdout.
+read_hidden() {
+  local value
+  printf '%s' "$1" >&2
+  read -rs value
+  printf '\n' >&2
+  printf '%s' "$value"
+}
+
+# Load the secret names from KEYS_LIST_FILE into SECRET_KEYS. If the file is
+# missing (fresh machine before dots is stowed), create an empty template and
+# warn — do not invent a name list here.
+load_key_names() {
+  if [[ ! -f "$KEYS_LIST_FILE" ]]; then
+    mkdir -p "$(dirname "$KEYS_LIST_FILE")"
+    printf '# Secret env-var names — one per line. Values live in the keychain.\n' \
+      > "$KEYS_LIST_FILE"
+    echo "keys: created empty ${KEYS_LIST_FILE}; add names then run 'keys set <NAME>'" >&2
+  fi
+  local line
+  while IFS= read -r line; do
+    line="${line%%#*}"                       # strip trailing comment
+    line="${line#"${line%%[![:space:]]*}"}"  # ltrim
+    line="${line%"${line##*[![:space:]]}"}"  # rtrim
+    [[ -n "$line" ]] && SECRET_KEYS+=("$line")
+  done < "$KEYS_LIST_FILE"
+}
+
+# ── Subcommands (one cmd_* per `keys <subcommand>`) ─────────────────────────
+cmd_list() {
+  local name value
+  for name in "${SECRET_KEYS[@]}"; do
+    if value="$(kc_get "$name")" && [[ -n "$value" ]]; then
+      printf '%-24s set (%d chars)\n' "$name" "${#value}"
+    else
+      printf '%-24s —\n' "$name"
+    fi
+  done
+}
+
+cmd_set() {
+  local name="${1:?usage: keys set <NAME>}" value
+  value="$(read_hidden "value for ${name} (hidden): ")"
+  [[ -z "$value" ]] && { echo "no value entered, aborting" >&2; return 1; }
+  kc_set "$name" "$value" && echo "stored ${name}" >&2
+}
+
+cmd_set_all() {
+  local name value hint
+  for name in "${SECRET_KEYS[@]}"; do
+    if kc_get "$name" >/dev/null 2>&1; then
+      hint="already set — blank to keep"
+    else
+      hint="not set — blank to skip"
+    fi
+    value="$(read_hidden "${name} (${hint}): ")"
+    [[ -z "$value" ]] && continue
+    kc_set "$name" "$value" && echo "  stored ${name}" >&2
+  done
+}
+
+cmd_get() {
+  local name="${1:?usage: keys get <NAME>}"
+  kc_get "$name"
+}
+
+cmd_load() {
+  local name value
+  for name in "${SECRET_KEYS[@]}"; do
+    value="$(kc_get "$name")" || continue
+    [[ -n "$value" ]] && printf 'export %s=%q\n' "$name" "$value"
+  done
+}
+
+cmd_rm() {
+  local name="${1:?usage: keys rm <NAME>}"
+  kc_rm "$name" && echo "removed ${name}" >&2 || echo "no such key: ${name}" >&2
+}
+
+cmd_help() { sed -n '2,16p' "$0" | sed 's/^# \{0,1\}//'; }
+
+# ── Dispatch ────────────────────────────────────────────────────────────────
+main() {
+  local sub="${1:-list}"
+  [[ $# -gt 0 ]] && shift
+  load_key_names   # cheap file read; every subcommand may reference SECRET_KEYS
+  case "$sub" in
+    list)           cmd_list ;;
+    set)            cmd_set "$@" ;;
+    set-all)        cmd_set_all ;;
+    get)            cmd_get "$@" ;;
+    load)           cmd_load ;;
+    rm|del|delete)  cmd_rm "$@" ;;
+    -h|--help|help) cmd_help ;;
+    *) echo "unknown subcommand: ${sub} (try: keys --help)" >&2; exit 2 ;;
+  esac
+}
+
+main "$@"
